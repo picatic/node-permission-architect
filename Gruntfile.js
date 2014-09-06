@@ -6,6 +6,10 @@ module.exports = function(grunt) {
     watch: {
       lib: {
         files: ['lib/**'],
+        tasks: ['jasmine_node:all']
+      },
+      example: {
+        files: ['lib/**', 'example.js'],
         tasks: ['run:example']
       }
     },
@@ -14,12 +18,29 @@ module.exports = function(grunt) {
         options: {},
         args: ['example.js']
       }
-    }
+    },
+    jasmine_node: {
+      options: {
+        forceExit: true,
+        match: '.',
+        matchall: false,
+        extensions: 'js',
+        specNameMatcher: 'spec',
+        jUnit: {
+          report: false,
+          savePath : "./build/reports/jasmine/",
+          useDotNotation: true,
+          consolidate: true
+        }
+      },
+      all: ['specs/']
+    },
+
   });
 
-  // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-run');
+  grunt.loadNpmTasks('grunt-jasmine-node');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
