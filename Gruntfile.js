@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       lib: {
-        files: ['lib/**'],
+        files: ['lib/**','specs/**'],
         tasks: ['jasmine_node:all']
       },
       example: {
@@ -20,14 +20,18 @@ module.exports = function(grunt) {
       }
     },
     jasmine_node: {
+      coverage: {
+        print: 'both'
+      },
       options: {
         forceExit: true,
+        projectRoot: './lib',
         match: '.',
         matchall: false,
         extensions: 'js',
         specNameMatcher: 'spec',
         jUnit: {
-          report: false,
+          report: true,
           savePath : "./build/reports/jasmine/",
           useDotNotation: true,
           consolidate: true
@@ -40,7 +44,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-run');
-  grunt.loadNpmTasks('grunt-jasmine-node');
+  grunt.loadNpmTasks('grunt-jasmine-node-coverage');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
