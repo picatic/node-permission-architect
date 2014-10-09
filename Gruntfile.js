@@ -39,12 +39,22 @@ module.exports = function(grunt) {
       },
       all: ['specs/']
     },
+    jsdoc: {
+      dist: {
+        src: ['lib/**/*js'],
+        options: {
+          destination: 'doc',
+          'private': false
+        }
+      }
+    }
 
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-run');
   grunt.loadNpmTasks('grunt-jasmine-node-coverage');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);

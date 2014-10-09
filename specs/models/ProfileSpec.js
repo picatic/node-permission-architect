@@ -1,7 +1,7 @@
 "use strict"
 
 describe("Profile", function() {
-  var Profile = require('../lib/Profile');
+  var Profile = require('../../lib/models/Profile');
 
   describe("constructor", function() {
     var profile = undefined;

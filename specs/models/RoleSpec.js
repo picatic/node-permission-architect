@@ -1,7 +1,7 @@
 "use strict"
 
 describe("Role", function() {
-  var Role = require('../lib/Role');
+  var Role = require('../../lib/models/Role');
 
   beforeEach(function() {
 

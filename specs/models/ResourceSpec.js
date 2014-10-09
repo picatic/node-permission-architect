@@ -1,7 +1,7 @@
 "use strict"
+var Resource = require('../../lib/models/Resource');
 
 describe("Resource", function() {
-  var Resource = require('../lib/Resource');
 
   describe("constructor", function() {
     var resource = undefined;
@@ -17,13 +17,14 @@ describe("Resource", function() {
     var resource = undefined;
     var myContext = undefined;
 
-    function beforeEach() {
+    beforeEach(function() {
+      console.log("beforeEach");
       myContext = {
         id: 1,
         title: 'Derp'
       }
       resource = new Resource('Post', 1, myContext);
-    };
+    });
 
     it("get", function() {
       expect(resource.getContext()).toBe(myContext);
