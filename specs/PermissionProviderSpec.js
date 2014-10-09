@@ -22,7 +22,7 @@ describe("PermissionProvider", function() {
 
   describe("setImplementation", function() {
     beforeEach(function() {
-      permissionProvider = new PermissionProvider('Event');
+      permissionProvider = new PermissionProvider('create');
     });
 
     it("set implemenation", function() {
@@ -30,5 +30,27 @@ describe("PermissionProvider", function() {
       permissionProvider.setImplementation(implementation);
       expect(permissionProvider.implementation).toBe(implementation);
     });
+  });
+
+  describe("getPermission", function() {
+    var role = undefined;
+    var resource = undefined;
+
+    beforeEach(function() {
+      role = {};
+      resource = {};
+      permissionProvider = new PermissionProvider('create');
+    });
+
+    it("defaults to default Permission", function() {
+      permissionProvider.getPermission(role, resource, function(err, permission) {
+        expect(err).toBe(null);
+        expect(permission.granted).toBe(false);
+        expect(permission.context).toBe(null);
+        expect(permission.provider).toBe(permissionProvider);
+      });
+    });
+
+
   });
 });

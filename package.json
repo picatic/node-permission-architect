@@ -14,5 +14,8 @@
     "grunt-jasmine-node-coverage": "^0.1.11",
     "grunt-jsdoc": "^0.6.1",
     "grunt-run": "^0.2.4"
+  },
+  "dependencies": {
+    "underscore": "^1.7.0"
   }
 }
