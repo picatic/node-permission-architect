@@ -1,6 +1,6 @@
 {
-  "name": "picatic-security",
-  "version": "1.0.0",
+  "name": "security-context",
+  "version": "1.0.0-alpha1",
   "description": "",
   "main": "index.js",
   "scripts": {
