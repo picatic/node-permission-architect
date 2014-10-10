@@ -4,10 +4,17 @@
   "description": "",
   "keywords": [
     "acl",
+    "access control",
+    "access list",
+    "access",
+    "authorization",
+    "role",
+    "roles",
     "crud",
     "feature-flag",
     "option-flag",
-    "permission"
+    "permission",
+    "permissions"
   ],
   "main": "./lib/index.js",
   "scripts": {
