@@ -1,3 +1,5 @@
+"use strict";
+
 var SecurityRegistry = require('../lib/SecurityRegistry');
 
 describe("SecurityRegistry", function() {
@@ -75,10 +77,11 @@ describe("SecurityRegistry", function() {
   });
 
   describe("buildRoleProvider", function() {
-    var instance;
+    var instance, implementation;
 
     beforeEach(function() {
-      instance = securityRegistry.buildRoleProvider("ProfileName", "ResourceName", {my: "config"});
+      implementation = {my: 'implementation'};
+      instance = securityRegistry.buildRoleProvider("ProfileName", "ResourceName", implementation);
     });
 
     it("returns instance of RoleProvider", function() {
@@ -91,7 +94,7 @@ describe("SecurityRegistry", function() {
     });
 
     it("config is set", function() {
-      expect(instance.config).toEqual({my: "config"});
+      expect(instance.getImplementation()).toEqual(implementation);
     });
   });
 

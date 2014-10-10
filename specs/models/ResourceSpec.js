@@ -1,10 +1,11 @@
-"use strict"
+"use strict";
+
 var Resource = require('../../lib/models/Resource');
 
 describe("Resource", function() {
 
   describe("constructor", function() {
-    var resource = undefined;
+    var resource;
 
     it("name and identifier set", function() {
       resource = new Resource("Tester", 123);
@@ -14,14 +15,13 @@ describe("Resource", function() {
   });
 
   describe("context", function() {
-    var resource = undefined;
-    var myContext = undefined;
+    var resource, myContext;
 
     beforeEach(function() {
       myContext = {
         id: 1,
         title: 'Derp'
-      }
+      };
       resource = new Resource('Post', 1, myContext);
     });
 
@@ -30,7 +30,7 @@ describe("Resource", function() {
     });
 
     it("set", function() {
-      newContext = {id: 2, title: 'Herb'};
+      var newContext = {id: 2, title: 'Herb'};
       resource.setContext(newContext);
       expect(resource.getContext()).toBe(newContext);
     });

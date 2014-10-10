@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 describe("Role", function() {
   var Role = require('../../lib/models/Role');
@@ -8,7 +8,7 @@ describe("Role", function() {
   });
 
   describe("constructor", function() {
-    var role = undefined;
+    var role;
 
     it("name to be set", function() {
       role = new Role("Tester");
@@ -17,7 +17,7 @@ describe("Role", function() {
 
     it("default weight of 0", function() {
       expect(role.weight).toBe(0);
-    })
+    });
   });
 
 });

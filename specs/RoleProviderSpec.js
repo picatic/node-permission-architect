@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 
 describe("RoleProvider", function() {
   var RoleProvider = require('../lib/RoleProvider');
-  var roleProvider = undefined;
+  var roleProvider;
 
   describe("constructor", function() {
 
@@ -17,14 +17,19 @@ describe("RoleProvider", function() {
 
   it("setImplementation", function() {
     roleProvider = new RoleProvider('Event', 'User');
-    implementation = {allRoles: function() {}};
-    roleProvider.setImplementation(implementation)
+    var implementation = {allRoles: function() {}};
+    roleProvider.setImplementation(implementation);
     expect(roleProvider.implementation).toBe(implementation);
   });
 
+  it("getImplementation", function() {
+    var implementation = {allRoles: function() {}};
+    roleProvider = new RoleProvider('Event', 'User', implementation);
+    expect(roleProvider.getImplementation()).toBe(implementation);
+  });
+
   describe("allRoles", function() {
-    var profile = undefined;
-    var resource = undefined;
+    var profile, resource;
 
     beforeEach(function() {
       roleProvider = new RoleProvider('Event', 'User');
@@ -41,7 +46,7 @@ describe("RoleProvider", function() {
     });
 
     it("calls implementation.allRoles", function(done) {
-      implementation = {
+      var implementation = {
         allRoles: function(a, b, cb) {
           cb(null, ['Test']);
         }
@@ -56,8 +61,7 @@ describe("RoleProvider", function() {
   });
 
   describe("bestRole", function() {
-    var profile = undefined;
-    var resource = undefined;
+    var profile, resource;
 
     beforeEach(function() {
       roleProvider = new RoleProvider('Event', 'User');
@@ -76,7 +80,7 @@ describe("RoleProvider", function() {
     });
 
     it("calls implementation.bestRole", function(done) {
-      implementation = {
+      var implementation = {
         bestRole: function(a, b, cb) {
           cb(null, 'Test');
         }

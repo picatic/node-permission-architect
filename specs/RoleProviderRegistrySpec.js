@@ -1,12 +1,10 @@
-"use strict"
+"use strict";
 
 var RoleProviderRegistry = require('../lib/RoleProviderRegistry');
 var RoleProvider = require('../lib/RoleProvider');
 
 describe('RoleProviderRegistry', function() {
-  var roleProviderRegistry = undefined;
-  var securityRegistry = undefined;
-  var roleProvider = undefined;
+  var roleProviderRegistry, securityRegistry, roleProvider;
 
   beforeEach(function() {
     securityRegistry = {is: 'securityRegistry'};
@@ -47,7 +45,7 @@ describe('RoleProviderRegistry', function() {
   });
 
   describe('forProfile', function() {
-    var anotherProvider = undefined;
+    var anotherProvider;
 
     beforeEach(function() {
       roleProvider = new RoleProvider('User', 'Event');
@@ -62,7 +60,7 @@ describe('RoleProviderRegistry', function() {
   });
 
   describe('forResource', function() {
-    var anotherProvider = undefined;
+    var anotherProvider;
 
     beforeEach(function() {
       roleProvider = new RoleProvider('User', 'Event');
@@ -77,7 +75,7 @@ describe('RoleProviderRegistry', function() {
   });
 
   describe('lookup', function() {
-    var anotherProvider = undefined;
+    var anotherProvider;
 
     beforeEach(function() {
       roleProvider = new RoleProvider('User', 'Event');

@@ -1,12 +1,11 @@
-"use strict"
+"use strict";
 
 var PermissionRegistry = require('../lib/PermissionRegistry');
 var PermissionProvider = require('../lib/PermissionProvider');
 
 describe("PermissionRegistry", function() {
-  var permissionRegistry = undefined;
-  var securityRegistry = undefined;
-  var permissionProvider = undefined;
+  var permissionRegistry, securityRegistry, permissionProvider;
+
   beforeEach(function() {
     securityRegistry = {my_registry: 'yes'};
     permissionRegistry = new PermissionRegistry(securityRegistry);

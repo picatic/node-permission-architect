@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 
 describe("Permission", function() {
   var Permission = require('../../lib/models/Permission');
-  var permission = undefined;
+  var permission;
   describe("constructor", function() {
 
     it("defaults", function() {

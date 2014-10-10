@@ -1,6 +1,6 @@
-"use strict"
+"use strict";
 
-PermissionProvider = require('../lib/PermissionProvider');
+var PermissionProvider = require('../lib/PermissionProvider');
 
 describe("PermissionProvider", function() {
   var permissionProvider;
@@ -26,15 +26,14 @@ describe("PermissionProvider", function() {
     });
 
     it("set implemenation", function() {
-      implementation = {my: 'provider'}
+      var implementation = {my: 'provider'};
       permissionProvider.setImplementation(implementation);
       expect(permissionProvider.implementation).toBe(implementation);
     });
   });
 
   describe("getPermission", function() {
-    var role = undefined;
-    var resource = undefined;
+    var role, resource;
 
     beforeEach(function() {
       role = {};

@@ -47,7 +47,19 @@ module.exports = function(grunt) {
         node: true
       },
       specs: {
-        options: {},
+        options: {
+          globals: {
+            describe: false,
+            xdescribe: false,
+            beforeEach: false,
+            afterEach: false,
+            it: false,
+            xit: false,
+            spyOn: false,
+            jasmine: false,
+            expect: false
+          }
+        },
         files: {
           src: ['./specs/**/*.js']
         }

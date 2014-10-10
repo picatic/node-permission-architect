@@ -1,10 +1,10 @@
-"use strict"
+"use strict";
 
 describe("Profile", function() {
   var Profile = require('../../lib/models/Profile');
 
   describe("constructor", function() {
-    var profile = undefined;
+    var profile;
 
     it("name and identifier set", function() {
       profile = new Profile("Tester", 123);
@@ -14,14 +14,13 @@ describe("Profile", function() {
   });
 
   describe("context", function() {
-    var profile = undefined;
-    var myContext = undefined;
+    var profile, myContext;
 
     beforeEach(function() {
       myContext = {
         id: 1,
         title: 'Derp'
-      }
+      };
       profile = new Profile('Post', 1, myContext);
     });
 
@@ -30,7 +29,7 @@ describe("Profile", function() {
     });
 
     it("set", function() {
-      newContext = {id: 2, title: 'Herb'};
+      var newContext = {id: 2, title: 'Herb'};
       profile.setContext(newContext);
       expect(profile.getContext()).toBe(newContext);
     });
