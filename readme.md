@@ -4,6 +4,10 @@
 
 [![NPM](https://nodei.co/npm/node-permission-architect.png?downloads=true)](https://nodei.co/npm/node-permission-architect/)
 
+# WIP
+
+This is a WIP right now and not fully functional. We are quickly moving towards integrating this into our production pipeline and will remove the WIP status and bump to version 1.0.0 once we have.
+
 # Why another ACL manager?
 
 Something that has bothered me about some ACL managers is how restricted they are.
@@ -22,7 +26,7 @@ of each part of the system.
 * Supports multiple instances, so you can provide different ACL mappings within the same process.
 * You can pass your own context/state to use within each Provider
 * Easy to migrate too from your existing ACL system (probably, let us know!)
-* Use a Bunyan compatible logger
+* Use a Bunyan compatible logger (Planned)
 
 
 # Model
@@ -45,7 +49,8 @@ statically code these, or have it look up the roles from your datasource.
 
 ## PermissionProvider
 
-Like the RoleProvider, you will need to provide a RoleProvider for each supported Role and Resource.
+Like the RoleProvider, you will need to provide a PermissionProvider for each supported Role and Resource.
+
 This is where you can conditionally provide permissions as defined by your own rules. You could insert
 basic CRUD here: ['read', 'write' ] or something more complicated like:
 
