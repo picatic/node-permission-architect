@@ -5,18 +5,12 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       lib: {
-        files: ['lib/**','specs/**'],
-        tasks: ['jasmine_node:all']
+        files: ['lib/**'],
+        tasks: ['jshint:lib', 'jasmine_node:all']
       },
-      example: {
-        files: ['lib/**', 'example.js'],
-        tasks: ['run:example']
-      }
-    },
-    run: {
-      example: {
-        options: {},
-        args: ['example.js']
+      spec: {
+        files: ['specs/**', ],
+        tasks: ['jshint:specs', 'jasmine_node:all']
       }
     },
     jasmine_node: {
@@ -47,16 +41,33 @@ module.exports = function(grunt) {
           'private': false
         }
       }
+    },
+    jshint: {
+      options: {
+        node: true
+      },
+      specs: {
+        options: {},
+        files: {
+          src: ['./specs/**/*.js']
+        }
+      },
+      lib: {
+        options: {},
+        files: {
+          src: ['./lib/**/*.js']
+        }
+      }
     }
-
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-run');
   grunt.loadNpmTasks('grunt-jasmine-node-coverage');
   grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
+  grunt.registerTask('travis', ['jshint:lib', 'jasmine_node:all']);
 
 };
