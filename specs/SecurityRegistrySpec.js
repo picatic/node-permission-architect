@@ -99,16 +99,17 @@ describe("SecurityRegistry", function() {
   });
 
   describe("registerRoleProvider", function() {
-    var roleProvider;
+    var roleProvider, roleProviderRegistry;
 
     beforeEach(function() {
       roleProvider = securityRegistry.buildRoleProvider("ProfileName", "ResourceName", {my: "config"});
+      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
     });
 
-    it("registeres roleProvider", function() {
-      spyOn(securityRegistry.getRoleProviderRegistry(),'register').andCallFake();
+    it("registers roleProvider", function() {
+      spyOn(roleProviderRegistry,'register').andCallFake(function() {});
       securityRegistry.registerRoleProvider(roleProvider);
-      expect(securityRegistry.getRoleProviderRegistry().register).toHaveBeenCalledWith(roleProvider);
+      expect(roleProviderRegistry.register).toHaveBeenCalledWith(roleProvider);
     });
   });
 });

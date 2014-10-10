@@ -32,7 +32,7 @@ describe('RoleProviderRegistry', function() {
     });
 
     it('adds to _roleProviders', function() {
-
+      expect(roleProviderRegistry._roleProviders).toEqual([roleProvider]);
     });
 
     it('maps to _resource', function() {
