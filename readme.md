@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/picatic/node-permission-architect.png?branch=master)](https://travis-ci.org/picatic/node-permission-architect)
+[![NPM version](https://badge.fury.io/js/node-permission-architect.png)](http://badge.fury.io/js/node-permission-architect)
+[![Code Climate](https://codeclimate.com/github/picatic/node-permission-architect.png)](https://codeclimate.com/github/picatic/node-permission-architect)
+
+[![NPM](https://nodei.co/npm/node-permission-architect.png?downloads=true)](https://nodei.co/npm/node-permission-architect/)
 
 # Why another ACL manager?
 
