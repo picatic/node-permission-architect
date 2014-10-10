@@ -1,12 +1,13 @@
 {
-  "name": "security-context",
-  "version": "1.0.0-alpha1",
+  "name": "permission-architect",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "keywords": ["acl","crud","feature-flag","option-flag","permission"],
+  "main": "./lib/index.js",
   "scripts": {
     "test": "grunt jasmine_node"
   },
-  "author": "",
+  "author": "Picatic E-Ticket Inc. <api@picatic.com> (https://www.picatic.com/)",
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
