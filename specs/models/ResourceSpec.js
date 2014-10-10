@@ -18,7 +18,6 @@ describe("Resource", function() {
     var myContext = undefined;
 
     beforeEach(function() {
-      console.log("beforeEach");
       myContext = {
         id: 1,
         title: 'Derp'

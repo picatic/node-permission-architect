@@ -1,6 +1,6 @@
 var SecurityRegistry = require('../lib/SecurityRegistry');
 
-xdescribe("SecurityRegistry", function() {
+describe("SecurityRegistry", function() {
   var securityRegistry;
 
   beforeEach(function() {
@@ -48,8 +48,8 @@ xdescribe("SecurityRegistry", function() {
       expect(instance.identifier).toBe("id");
     });
 
-    it("config is set", function() {
-      expect(instance.config).toEqual({my: "config"});
+    it("context is set", function() {
+      expect(instance.getContext()).toEqual({my: "config"});
     });
   });
 
@@ -69,8 +69,8 @@ xdescribe("SecurityRegistry", function() {
       expect(instance.identifier).toBe("id");
     });
 
-    it("config is set", function() {
-      expect(instance.config).toEqual({my: "config"});
+    it("context is set", function() {
+      expect(instance.getContext()).toEqual({my: "config"});
     });
   });
 
