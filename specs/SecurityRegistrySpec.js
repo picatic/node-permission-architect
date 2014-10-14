@@ -1,6 +1,7 @@
 "use strict";
 
 var SecurityRegistry = require('../lib/SecurityRegistry');
+var Models = require('../lib/models');
 
 describe("SecurityRegistry", function() {
   var securityRegistry;
@@ -15,6 +16,30 @@ describe("SecurityRegistry", function() {
 
   it("Provides default instance", function() {
     expect(securityRegistry.name).toBe('__default__');
+  });
+
+  it('instance has Models', function() {
+    expect(securityRegistry.Models).not.toBeUndefined();
+  });
+
+  describe('roleFallback', function() {
+
+    it('default fallback is empty Role', function() {
+      expect(securityRegistry._fallbackRole instanceof Models.Role).toBe(true);
+      expect(securityRegistry._fallbackRole.name).toBeUndefined();
+    });
+
+    it('setFallback', function() {
+      var role = new Models.Role('test');
+      securityRegistry.setFallbackRole(role);
+      expect(securityRegistry._fallbackRole).toBe(role);
+    });
+
+    it('getFallback', function() {
+      var role = new Models.Role('test');
+      securityRegistry.setFallbackRole(role);
+      expect(securityRegistry.getFallbackRole()).toBe(role);
+    });
   });
 
   describe("getRoleProviderRegistry", function() {
