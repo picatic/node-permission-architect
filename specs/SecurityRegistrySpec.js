@@ -2,6 +2,8 @@
 
 var SecurityRegistry = require('../lib/SecurityRegistry');
 var Models = require('../lib/models');
+var PermissionProvider = require('../lib/PermissionProvider');
+var PermissionRegistry = require('../lib/PermissionRegistry');
 
 describe("SecurityRegistry", function() {
   var securityRegistry;
@@ -22,7 +24,7 @@ describe("SecurityRegistry", function() {
     expect(securityRegistry.Models).not.toBeUndefined();
   });
 
-  describe('roleFallback', function() {
+  describe('Role fallback', function() {
 
     it('default fallback is empty Role', function() {
       expect(securityRegistry._fallbackRole instanceof Models.Role).toBe(true);
@@ -39,6 +41,25 @@ describe("SecurityRegistry", function() {
       var role = new Models.Role('test');
       securityRegistry.setFallbackRole(role);
       expect(securityRegistry.getFallbackRole()).toBe(role);
+    });
+  });
+
+  describe('Permission fallback', function() {
+    it('default fallback is empty Permission', function() {
+      expect(securityRegistry._fallbackPermission instanceof Models.Permission).toBe(true);
+      expect(securityRegistry._fallbackPermission).toEqual(new Models.Permission());
+    });
+
+    it('setFallback', function() {
+      var permission = new Models.Permission(true, {});
+      securityRegistry.setFallbackPermission(permission);
+      expect(securityRegistry._fallbackPermission).toBe(permission);
+    });
+
+    it('getFallback', function() {
+      var permission = new Models.Permission(true, {});
+      securityRegistry.setFallbackPermission(permission);
+      expect(securityRegistry.getFallbackPermission()).toBe(permission);
     });
   });
 
@@ -135,6 +156,127 @@ describe("SecurityRegistry", function() {
       spyOn(roleProviderRegistry,'register').andCallFake(function() {});
       securityRegistry.registerRoleProvider(roleProvider);
       expect(roleProviderRegistry.register).toHaveBeenCalledWith(roleProvider);
+    });
+  });
+
+  describe('resourcesForProfile', function() {
+    var roleProviderRegistry;
+    it('calls forProfile on RoleProviderRegistry', function() {
+      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
+      spyOn(roleProviderRegistry, 'forProfile').andCallThrough();
+      securityRegistry.resourcesForProfile('User');
+      expect(roleProviderRegistry.forProfile).toHaveBeenCalled();
+    });
+  });
+
+  describe('profilesForResource', function() {
+    var roleProviderRegistry;
+    it('calls forResource on RoleProviderRegistry', function() {
+      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
+      spyOn(roleProviderRegistry, 'forResource').andCallThrough();
+      securityRegistry.profilesForResource('Event');
+      expect(roleProviderRegistry.forResource).toHaveBeenCalled();
+    });
+  });
+
+  describe('buildPermissionProvider', function() {
+
+    var instance, implementation;
+
+    beforeEach(function() {
+      implementation = {my: 'implementation'};
+      instance = securityRegistry.buildPermissionProvider("create", implementation);
+    });
+
+    it("returns instance of PermissionProvider", function() {
+      expect(instance.constructor.name).toBe('PermissionProvider');
+      expect(instance instanceof PermissionProvider).toBe(true);
+    });
+
+    it("name set", function() {
+      expect(instance.name).toBe("create");
+    });
+
+    it("implementation is set", function() {
+      expect(instance.getImplementation()).toEqual(implementation);
+    });
+  });
+
+  describe('getPermissionRegistry', function() {
+    var instance;
+    beforeEach(function() {
+      instance = securityRegistry.getPermissionRegistry();
+    });
+
+    it("returns instance of PermissionRegistry", function() {
+      expect(instance instanceof PermissionRegistry).toBe(true);
+    });
+
+    it("is same instance each time", function() {
+      var secondInstance = securityRegistry.getPermissionRegistry();
+      expect(secondInstance).toEqual(instance);
+    });
+
+  });
+
+  describe('registerPermissionProviders', function() {
+    var instance, implementation;
+
+    beforeEach(function() {
+      implementation = {my: 'implementation'};
+      instance = securityRegistry.buildPermissionProvider("create", implementation);
+    });
+
+    it('calls register on PermissionProvider', function() {
+      spyOn(securityRegistry.getPermissionRegistry(), 'register').andCallThrough();
+      securityRegistry.registerPermissionProviders('Event', [instance]);
+      expect(securityRegistry.getPermissionRegistry().register).toHaveBeenCalledWith('Event', [instance]);
+    });
+
+  });
+
+  describe('rolesFor', function() {
+    var profile, resource;
+
+    beforeEach(function() {
+      profile = new Models.Profile('User', 1);
+      resource = new Models.Resource('Page', 2);
+    });
+
+    it('returns fallback role if no RoleProvider found', function(done) {
+      securityRegistry.rolesFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual([securityRegistry.getFallbackRole()]);
+        done();
+      });
+    });
+
+    it('returns fallback role if RoleProvider returns null', function(done) {
+      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+        allRoles: function(profile, resource, cb) {
+          setImmediate(cb, null, null);
+        }
+      });
+      securityRegistry.registerRoleProvider(roleProvider);
+      securityRegistry.rolesFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual([securityRegistry.getFallbackRole()]);
+        done();
+      });
+    });
+
+    it('returns role provided from RoleProvider', function(done) {
+      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+        allRoles: function(profile, resource, cb) {
+          setImmediate(cb, null, ['admin']);
+        }
+      });
+      securityRegistry.registerRoleProvider(roleProvider);
+      securityRegistry.rolesFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual(['admin']);
+        done();
+      });
     });
   });
 });
