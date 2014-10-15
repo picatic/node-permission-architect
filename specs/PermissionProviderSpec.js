@@ -32,6 +32,18 @@ describe("PermissionProvider", function() {
     });
   });
 
+  describe('getImplementation', function() {
+    var implementation;
+    beforeEach(function() {
+      implementation = {my: 'test'};
+      permissionProvider = new PermissionProvider('create', implementation);
+    });
+
+    it("get implemenation", function() {
+      expect(permissionProvider.getImplementation()).toBe(implementation);
+    });
+  });
+
   describe("getPermission", function() {
     var role, resource;
 
