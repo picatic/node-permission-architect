@@ -4,6 +4,7 @@ var SecurityRegistry = require('../lib/SecurityRegistry');
 var Models = require('../lib/models');
 var PermissionProvider = require('../lib/PermissionProvider');
 var PermissionRegistry = require('../lib/PermissionRegistry');
+var Errors = require('../lib/Errors');
 
 describe("SecurityRegistry", function() {
   var securityRegistry;
@@ -277,6 +278,42 @@ describe("SecurityRegistry", function() {
         expect(role).toEqual(['admin']);
         done();
       });
+    });
+  });
+
+  describe('getPermission', function() {
+    var role, resource, permissionProvider;
+
+    beforeEach(function() {
+      role = new Models.Role('admin');
+      resource = securityRegistry.buildResource('Event', 1, {});
+      permissionProvider = securityRegistry.buildPermissionProvider('create');
+      securityRegistry.registerPermissionProviders('Event', [permissionProvider]);
+    });
+
+    it('calls getPermission on PermissionResgitry', function(done) {
+      spyOn(securityRegistry.getPermissionRegistry(), 'getPermission').andCallThrough();
+      securityRegistry.getPermission('create', role, resource, function(err, permission) {
+        expect(securityRegistry.getPermissionRegistry().getPermission).toHaveBeenCalledWith('create', role, resource, jasmine.any(Function));
+        done();
+      });
+    });
+
+  });
+
+  describe('buildRole', function() {
+
+    it('creates instance of Role', function() {
+      var role = securityRegistry.buildRole('admin');
+      expect(role instanceof Models.Role).toBe(true);
+    });
+  });
+
+  describe('buildPermission', function() {
+
+    it('creates instance of Permission', function() {
+      var permission = securityRegistry.buildPermission(true, {my:'context'}, {provider:'magic'});
+      expect(permission instanceof Models.Permission).toBe(true);
     });
   });
 });

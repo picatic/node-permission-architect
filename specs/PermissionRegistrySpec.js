@@ -87,7 +87,11 @@ describe("PermissionRegistry", function() {
       permissionRegistry.register('Event', [
           new PermissionProvider('create', {
             getPermission: function(role, resource, cb) {
-              setImmediate(cb, null, new Models.Permission(true));
+              if (role.name === 'admin') {
+                setImmediate(cb, null, new Models.Permission(true));
+              } else {
+                setImmediate(cb, null, new Models.Permission(false));
+              }
             }
           })
         ]
@@ -95,16 +99,16 @@ describe("PermissionRegistry", function() {
     });
 
     it('returns Error if no resource matches', function(done) {
-      permissionRegistry.getPermission('update', role, new Models.Resource('Nope'), function(err, permission) {
+      permissionRegistry.getPermission('update', new Models.Resource('Nope'), role, function(err, permission) {
         expect(err).not.toBe(null);
         expect(err instanceof Errors.PermissionArchitectPermissionProviderNotFound);
-        expect(err.message).toBe('Permission Provider for Resource Nope not found.');
+        expect(err.message).toBe('Could not find PermissionProvider for Resource: Nope');
         done();
       });
     });
 
     it('returns Permission instance', function(done) {
-      permissionRegistry.getPermission('create', role, new Models.Resource('Event'), function(err, permission) {
+      permissionRegistry.getPermission('create', resource, role, function(err, permission) {
         expect(err).toBe(null);
         expect(permission instanceof Models.Permission).toBe(true);
         expect(permission.granted).toBe(true);
