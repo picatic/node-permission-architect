@@ -115,6 +115,25 @@ describe("PermissionRegistry", function() {
         done();
       });
     });
+
+    it('calls implementation with scope of PermissionProvider', function(done) {
+       permissionRegistry.register('Event', [
+          new PermissionProvider('update', {
+            getPermission: function(role, resource, cb) {
+              if (this.name === 'update') {
+                setImmediate(cb, null, new Models.Permission(true));
+              } else {
+                setImmediate(cb, null, new Models.Permission(false));
+              }
+            }
+          })
+        ]
+      );
+      permissionRegistry.getPermission('update', resource, role, function(err, permission) {
+        expect(permission.granted).toBe(true);
+        done();
+      });
+    });
   });
 
 });
