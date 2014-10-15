@@ -33,13 +33,13 @@ sr.registerPermissionProviders('Post', [
 
 // Register RoleProvider
 
-sr.registerRoleProvider('User', 'Post', {allRoles: function(profile, resource, cb) {
+sr.registerRoleProvider(sr.buildRoleProvider('User', 'Post', {allRoles: function(profile, resource, cb) {
   if (profile.identifier == 'thomas') {
     setImmediate(cb, null, [sr.buildRole('admin')]);
   } else {
     setImmediate(cb, null, [sr.buildRole('guest')]);
   }
-}});
+}}));
 
 // Create some Users to check against
 var thomas = sr.buildProfile('User', 'thomas');
