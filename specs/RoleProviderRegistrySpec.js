@@ -7,7 +7,7 @@ describe('RoleProviderRegistry', function() {
   var roleProviderRegistry, securityRegistry, roleProvider;
 
   beforeEach(function() {
-    securityRegistry = {is: 'securityRegistry'};
+    securityRegistry = {is: 'securityRegistry', log: function() {}};
     roleProviderRegistry = new RoleProviderRegistry(securityRegistry);
   });
 

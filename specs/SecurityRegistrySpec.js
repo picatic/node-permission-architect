@@ -64,6 +64,55 @@ describe("SecurityRegistry", function() {
     });
   });
 
+  describe('logger', function() {
+    var logger = null;
+
+    beforeEach(function() {
+      logger = {
+        info: function() {}
+      };
+    });
+
+    it('default to null', function() {
+      expect(securityRegistry._logger).toBe(null);
+    });
+
+    it('setLogger', function() {
+      securityRegistry.setLogger(logger);
+      expect(securityRegistry._logger).toBe(logger);
+    });
+
+    it('getLogger', function() {
+      securityRegistry.setLogger(logger);
+      expect(securityRegistry.getLogger()).toBe(logger);
+    });
+  });
+
+  describe('log', function() {
+    var logger = null;
+
+    beforeEach(function() {
+      logger = {
+        info: function() {}
+      };
+    });
+
+    it('calls _logger with first param as method and additional params passed along', function() {
+      securityRegistry.setLogger(logger);
+      spyOn(logger, 'info').andCallThrough();
+      securityRegistry.log('info', 'My string %s', 'a');
+      expect(logger.info).toHaveBeenCalledWith('My string %s', 'a');
+    });
+
+    it('does not call non-existant levels', function() {
+      securityRegistry.setLogger(logger);
+      var test = function() {
+        securityRegistry.log('madeup', 'My string %s', 'a');
+      };
+      expect(test).not.toThrow();
+    });
+  });
+
   describe("getRoleProviderRegistry", function() {
     var instance;
     beforeEach(function() {
@@ -211,6 +260,10 @@ describe("SecurityRegistry", function() {
 
     it("returns instance of PermissionRegistry", function() {
       expect(instance instanceof PermissionRegistry).toBe(true);
+    });
+
+    it('sets securityRegistry from constructor', function() {
+      expect(instance._securityRegistry).toBe(securityRegistry);
     });
 
     it("is same instance each time", function() {
