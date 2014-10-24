@@ -1,7 +1,13 @@
 {
   "name": "permission-architect",
-  "version": "0.1.2",
-  "description": "",
+  "version": "0.1.3",
+  "description": "A framework to build highly customizable ACL like permissions with.",
+  "homepage": "https://github.com/picatic/node-permission-architect",
+  "bugs": "https://github.com/picatic/node-permission-architect/issues",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:picatic/node-permission-architect.git"
+  },
   "keywords": [
     "acl",
     "access control",
@@ -21,6 +27,7 @@
     "test": "grunt travis"
   },
   "author": "Picatic E-Ticket Inc. <api@picatic.com> (https://www.picatic.com/)",
+  "contributors": [],
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -31,5 +38,8 @@
   },
   "dependencies": {
     "underscore": "^1.7.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
 }
