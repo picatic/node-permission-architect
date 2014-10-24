@@ -334,6 +334,51 @@ describe("SecurityRegistry", function() {
     });
   });
 
+  describe('bestRoleFor', function() {
+    var profile, resource;
+
+    beforeEach(function() {
+      profile = new Models.Profile('User', 1);
+      resource = new Models.Resource('Page', 2);
+    });
+
+    it('returns fallback role if no RoleProvider found', function(done) {
+      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual(securityRegistry.getFallbackRole());
+        done();
+      });
+    });
+
+    it('returns fallback role if RoleProvider returns null', function(done) {
+      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+        allRoles: function(provider, profile, resource, cb) {
+          setImmediate(cb, null, null);
+        }
+      });
+      securityRegistry.registerRoleProvider(roleProvider);
+      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual(securityRegistry.getFallbackRole());
+        done();
+      });
+    });
+
+    it('returns role provided from RoleProvider', function(done) {
+      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+        bestRole: function(provider, profile, resource, cb) {
+          setImmediate(cb, null, 'admin');
+        }
+      });
+      securityRegistry.registerRoleProvider(roleProvider);
+      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+        expect(err).toBe(null);
+        expect(role).toEqual('admin');
+        done();
+      });
+    });
+  });
+
   describe('getPermission', function() {
     var role, resource, permissionProvider;
 
