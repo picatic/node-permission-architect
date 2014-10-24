@@ -262,6 +262,10 @@ describe("SecurityRegistry", function() {
       expect(instance instanceof PermissionRegistry).toBe(true);
     });
 
+    it('sets securityRegistry from constructor', function() {
+      expect(instance._securityRegistry).toBe(securityRegistry);
+    });
+
     it("is same instance each time", function() {
       var secondInstance = securityRegistry.getPermissionRegistry();
       expect(secondInstance).toEqual(instance);
