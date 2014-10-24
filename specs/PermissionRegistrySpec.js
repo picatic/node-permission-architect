@@ -42,6 +42,20 @@ describe("PermissionRegistry", function() {
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
       expect(permissionRegistry.providers.Event.read).toBe(permissionProvider);
     });
+
+    it('expects string resourceName', function() {
+      var test = function() {
+        permissionRegistry.register({}, []);
+      };
+      expect(test).toThrow('Expected resourceName to be string');
+    });
+
+    it('expects providers to be an Array', function() {
+      var test = function() {
+        permissionRegistry.register('Post', {});
+      };
+      expect(test).toThrow('Expected permissionProviders to be an Array');
+    });
   });
 
   describe('permissionsForResource', function() {
