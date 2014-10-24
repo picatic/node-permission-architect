@@ -26,7 +26,7 @@ of each part of the system.
 * Supports multiple instances, so you can provide different ACL mappings within the same process.
 * You can pass your own context/state to use within each Provider
 * Easy to migrate too from your existing ACL system (probably, let us know!)
-* Use a Bunyan compatible logger (Planned)
+* Use a Bunyan compatible logger
 
 
 # Model
