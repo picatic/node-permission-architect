@@ -9,7 +9,7 @@ describe("PermissionRegistry", function() {
   var permissionRegistry, securityRegistry, permissionProvider;
 
   beforeEach(function() {
-    securityRegistry = {my_registry: 'yes'};
+    securityRegistry = {my_registry: 'yes', log: function() {}};
     permissionRegistry = new PermissionRegistry(securityRegistry);
   });
 
