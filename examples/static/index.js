@@ -4,24 +4,24 @@ var sr = SecurityRegistry.get();
 // build CRUD
 // This is a manual factory pattern and could be paramaterized from a file
 sr.registerPermissionProviders('Post', [
-  sr.buildPermissionProvider('create', {getPermission: function(provier, role, resource, cb) {
+  sr.buildPermissionProvider('create', {getPermission: function(provider, role, resource, cb) {
     if (role.name === 'admin') {
       setImmediate(cb, null, sr.buildPermission(true));
     } else {
       setImmediate(cb, null, sr.buildPermission(false));
     }
   }}),
-  sr.buildPermissionProvider('update', {getPermission: function(provier, role, resource, cb) {
+  sr.buildPermissionProvider('update', {getPermission: function(provider, role, resource, cb) {
     if (role.name === 'admin') {
       setImmediate(cb, null, sr.buildPermission(true));
     } else {
       setImmediate(cb, null, sr.buildPermission(false));
     }
   }}),
-  sr.buildPermissionProvider('read', {getPermission: function(provier, role, resource, cb) {
+  sr.buildPermissionProvider('read', {getPermission: function(provider, role, resource, cb) {
     setImmediate(cb, null, sr.buildPermission(true));
   }}),
-  sr.buildPermissionProvider('delete', {getPermission: function(provier, role, resource, cb) {
+  sr.buildPermissionProvider('delete', {getPermission: function(provider, role, resource, cb) {
     if (role.name === 'admin') {
       setImmediate(cb, null, sr.buildPermission(true));
     } else {
@@ -32,7 +32,7 @@ sr.registerPermissionProviders('Post', [
 
 // Register RoleProvider
 
-sr.registerRoleProvider(sr.buildRoleProvider('User', 'Post', {allRoles: function(provier, profile, resource, cb) {
+sr.registerRoleProvider(sr.buildRoleProvider('User', 'Post', {allRoles: function(provider, profile, resource, cb) {
   if (profile.identifier == 'thomas') {
     setImmediate(cb, null, [sr.buildRole('admin')]);
   } else {
