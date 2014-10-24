@@ -254,7 +254,7 @@ describe("SecurityRegistry", function() {
 
     it('returns fallback role if RoleProvider returns null', function(done) {
       var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
-        allRoles: function(profile, resource, cb) {
+        allRoles: function(provider, profile, resource, cb) {
           setImmediate(cb, null, null);
         }
       });
@@ -268,7 +268,7 @@ describe("SecurityRegistry", function() {
 
     it('returns role provided from RoleProvider', function(done) {
       var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
-        allRoles: function(profile, resource, cb) {
+        allRoles: function(provider, profile, resource, cb) {
           setImmediate(cb, null, ['admin']);
         }
       });

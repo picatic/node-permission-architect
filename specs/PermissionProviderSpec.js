@@ -59,6 +59,17 @@ describe("PermissionProvider", function() {
         expect(permission.granted).toBe(false);
         expect(permission.context).toBe(null);
         expect(permission.provider).toBe(permissionProvider);
+    it("calls implementation when set", function(done) {
+      var implementation = {
+        getPermission: function(provider, role, resource, cb) {
+          cb(null, null);
+        }
+      };
+      permissionProvider.setImplementation(implementation);
+      spyOn(implementation, 'getPermission').andCallThrough();
+      permissionProvider.getPermission(role, resource, function(err, permission) {
+        expect(implementation.getPermission).toHaveBeenCalledWith(permissionProvider, role, resource, jasmine.any(Function));
+        done();
       });
     });
 
