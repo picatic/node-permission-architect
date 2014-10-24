@@ -47,35 +47,20 @@ describe("RoleProvider", function() {
 
     it("calls implementation.allRoles", function(done) {
       var implementation = {
-        allRoles: function(a, b, cb) {
+        allRoles: function(provider, profile, resource, cb) {
           cb(null, ['Test']);
         }
       };
+      spyOn(implementation, 'allRoles').andCallThrough();
       roleProvider.setImplementation(implementation);
       roleProvider.allRoles(profile, resource, function(err, roles) {
         expect(err).toBe(null);
         expect(roles).toEqual(['Test']);
+        expect(implementation.allRoles).toHaveBeenCalledWith(roleProvider, profile, resource, jasmine.any(Function));
         done();
       });
     });
 
-    it('implementation called with RoleProvider scope', function(done) {
-      var implementation = {
-        allRoles: function(a, b, cb) {
-          if (this.profileName === 'User') {
-            cb(null, ['Test']);
-          } else {
-            cb(null, []);
-          }
-        }
-      };
-      roleProvider.setImplementation(implementation);
-      roleProvider.allRoles(profile, resource, function(err, roles) {
-        expect(err).toBe(null);
-        expect(roles).toEqual(['Test']);
-        done();
-      });
-    });
   });
 
   describe("bestRole", function() {
@@ -99,35 +84,20 @@ describe("RoleProvider", function() {
 
     it("calls implementation.bestRole", function(done) {
       var implementation = {
-        bestRole: function(a, b, cb) {
+        bestRole: function(provider, profile, resource, cb) {
           cb(null, 'Test');
         }
       };
+      spyOn(implementation, 'bestRole').andCallThrough();
       roleProvider.setImplementation(implementation);
       roleProvider.bestRole(profile, resource, function(err, role) {
         expect(err).toBe(null);
         expect(role).toEqual('Test');
+        expect(implementation.bestRole).toHaveBeenCalledWith(roleProvider, profile, resource, jasmine.any(Function));
         done();
       });
     });
 
-     it('implementation called with RoleProvider scope', function(done) {
-      var implementation = {
-        bestRole: function(a, b, cb) {
-          if (this.profileName === 'User') {
-            cb(null, 'Test');
-          } else {
-            cb(null, []);
-          }
-        }
-      };
-      roleProvider.setImplementation(implementation);
-      roleProvider.bestRole(profile, resource, function(err, role) {
-        expect(err).toBe(null);
-        expect(role).toEqual('Test');
-        done();
-      });
-    });
   });
 
 });
