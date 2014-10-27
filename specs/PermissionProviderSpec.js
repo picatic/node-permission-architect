@@ -61,23 +61,21 @@ describe("PermissionProvider", function() {
       permissionProvider = new PermissionProvider('create');
     });
 
-    it('throws exception if role is not object', function() {
-      var test = function() {
-        permissionProvider.getPermission(false, {}, {});
-      };
-
-      expect(test).toThrow('Expected role to be object');
+    it('returns error if role is not object', function(done) {
+      permissionProvider.getPermission(false, {}, function(err) {
+        expect(err.message).toBe('Expected role to be object');
+        done();
+      });
     });
 
-    it('throw exception if resource is not object', function() {
-      var test = function() {
-        permissionProvider.getPermission({}, false, {});
-      };
-
-      expect(test).toThrow('Expected resource to be object');
+    it('returns error if resource is not object', function(done) {
+      permissionProvider.getPermission({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
     });
 
-    it('throws exception if cb is not function', function() {
+    it('throw error if cb is not function', function() {
       var test = function() {
         permissionProvider.getPermission({}, {}, false);
       };

@@ -54,20 +54,18 @@ describe("RoleProvider", function() {
       resource = {};
     });
 
-    it('throws exception if profile is not object', function() {
-      var test = function() {
-        roleProvider.allRoles(false, {}, {});
-      };
-
-      expect(test).toThrow('Expected profile to be object');
+    it('returns error if profile is not object', function(done) {
+      roleProvider.allRoles(false, {}, function(err) {
+        expect(err.message).toBe('Expected profile to be object');
+        done();
+      });
     });
 
-    it('throws exception if resource is not object', function() {
-      var test = function() {
-        roleProvider.allRoles({}, false, {});
-      };
-
-      expect(test).toThrow('Expected resource to be object');
+    it('returns error if resource is not object', function(done) {
+      roleProvider.allRoles({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
     });
 
     it('throws exception if cb is not function', function() {
@@ -113,20 +111,18 @@ describe("RoleProvider", function() {
       resource = {};
     });
 
-    it('throws exception if profile is not object', function() {
-      var test = function() {
-        roleProvider.bestRole(false, {}, {});
-      };
-
-      expect(test).toThrow('Expected profile to be object');
+   it('returns error if profile is not object', function(done) {
+      roleProvider.bestRole(false, {}, function(err) {
+        expect(err.message).toBe('Expected profile to be object');
+        done();
+      });
     });
 
-    it('throws exception if resource is not object', function() {
-      var test = function() {
-        roleProvider.bestRole({}, false, {});
-      };
-
-      expect(test).toThrow('Expected resource to be object');
+    it('returns error if resource is not object', function(done) {
+      roleProvider.bestRole({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
     });
 
     it('throws exception if cb is not function', function() {

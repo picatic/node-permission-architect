@@ -112,28 +112,25 @@ describe("PermissionRegistry", function() {
       );
     });
 
-    it('throws exception if permissionName is not string', function() {
-      var test = function() {
-        permissionRegistry.getPermission({}, {}, {}, {});
-      };
-
-      expect(test).toThrow('Expected permissionName to be of type String');
+    it('returns error if permissionName is not string', function(done) {
+      permissionRegistry.getPermission({}, {}, {}, function(err) {
+        expect(err.message).toBe('Expected permissionName to be of type String');
+        done();
+      });
     });
 
-    it('throws exception if resource is not object', function() {
-      var test = function() {
-        permissionRegistry.getPermission('create', false, {}, {});
-      };
-
-      expect(test).toThrow('Expected resource to be type of Object');
+    it('returns error if resource is not object', function(done) {
+      permissionRegistry.getPermission('create', false, {}, function(err) {
+        expect(err.message).toBe('Expected resource to be type of Object');
+        done();
+      });
     });
 
-    it('throws exception if role is not object', function() {
-      var test = function() {
-        permissionRegistry.getPermission('create', {}, false, {});
-      };
-
-      expect(test).toThrow('Expected role to be type of Object');
+    it('returns error if role is not object', function(done) {
+      permissionRegistry.getPermission('create', {}, false, function(err) {
+        expect(err.message).toBe('Expected role to be type of Object');
+        done();
+      });
     });
 
     it('throws exception if cb is not function', function() {
