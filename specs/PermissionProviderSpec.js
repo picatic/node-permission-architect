@@ -11,6 +11,14 @@ describe("PermissionProvider", function() {
       permissionProvider = new PermissionProvider('create');
     });
 
+    it('throws exception when name is not string', function() {
+      var test = function() {
+        new PermissionProvider(false, {});
+      };
+
+      expect(test).toThrow('Expected name to be string');
+    });
+
     it("sets name", function() {
       expect(permissionProvider.name).toBe('create');
     });
@@ -51,6 +59,28 @@ describe("PermissionProvider", function() {
       role = {};
       resource = {};
       permissionProvider = new PermissionProvider('create');
+    });
+
+    it('returns error if role is not object', function(done) {
+      permissionProvider.getPermission(false, {}, function(err) {
+        expect(err.message).toBe('Expected role to be object');
+        done();
+      });
+    });
+
+    it('returns error if resource is not object', function(done) {
+      permissionProvider.getPermission({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
+    });
+
+    it('throw error if cb is not function', function() {
+      var test = function() {
+        permissionProvider.getPermission({}, {}, false);
+      };
+
+      expect(test).toThrow('Expected cb to be function');
     });
 
     it("defaults to default Permission", function(done) {

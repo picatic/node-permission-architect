@@ -42,6 +42,20 @@ describe("PermissionRegistry", function() {
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
       expect(permissionRegistry.providers.Event.read).toBe(permissionProvider);
     });
+
+    it('expects string resourceName', function() {
+      var test = function() {
+        permissionRegistry.register({}, []);
+      };
+      expect(test).toThrow('Expected resourceName to be string');
+    });
+
+    it('expects providers to be an Array', function() {
+      var test = function() {
+        permissionRegistry.register('Post', {});
+      };
+      expect(test).toThrow('Expected permissionProviders to be an Array');
+    });
   });
 
   describe('permissionsForResource', function() {
@@ -96,6 +110,35 @@ describe("PermissionRegistry", function() {
           })
         ]
       );
+    });
+
+    it('returns error if permissionName is not string', function(done) {
+      permissionRegistry.getPermission({}, {}, {}, function(err) {
+        expect(err.message).toBe('Expected permissionName to be of type String');
+        done();
+      });
+    });
+
+    it('returns error if resource is not object', function(done) {
+      permissionRegistry.getPermission('create', false, {}, function(err) {
+        expect(err.message).toBe('Expected resource to be type of Object');
+        done();
+      });
+    });
+
+    it('returns error if role is not object', function(done) {
+      permissionRegistry.getPermission('create', {}, false, function(err) {
+        expect(err.message).toBe('Expected role to be type of Object');
+        done();
+      });
+    });
+
+    it('throws exception if cb is not function', function() {
+      var test = function() {
+        permissionRegistry.getPermission('create', {}, {}, {});
+      };
+
+      expect(test).toThrow('Expected cb to be type of function');
     });
 
     it('returns Error if no resource matches', function(done) {

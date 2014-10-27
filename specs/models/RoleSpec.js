@@ -10,6 +10,14 @@ describe("Role", function() {
   describe("constructor", function() {
     var role;
 
+    it('throws exception if name is not string', function() {
+      var test = function() {
+        new Role(false);
+      };
+
+      expect(test).toThrow('Expected name to be string');
+    });
+
     it("name to be set", function() {
       role = new Role("Tester");
       expect(role.name).toBe("Tester");

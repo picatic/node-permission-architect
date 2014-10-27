@@ -13,6 +13,23 @@ describe("RoleProvider", function() {
       expect(roleProvider.resourceName).toBe('Resource');
       expect(roleProvider.implementation).toBe(implementation);
     });
+
+    it('throws exception when profileName is not string', function() {
+      var test = function() {
+        new RoleProvider(false, false, {});
+      };
+
+      expect(test).toThrow('Expected profileName to be string');
+    });
+
+    it('throws exception when resourceName is not string', function() {
+        var test = function() {
+        new RoleProvider('test', false, {});
+      };
+
+      expect(test).toThrow('Expected resourceName to be string');
+    });
+
   });
 
   it("setImplementation", function() {
@@ -35,6 +52,28 @@ describe("RoleProvider", function() {
       roleProvider = new RoleProvider('User', 'Event');
       profile = {};
       resource = {};
+    });
+
+    it('returns error if profile is not object', function(done) {
+      roleProvider.allRoles(false, {}, function(err) {
+        expect(err.message).toBe('Expected profile to be object');
+        done();
+      });
+    });
+
+    it('returns error if resource is not object', function(done) {
+      roleProvider.allRoles({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
+    });
+
+    it('throws exception if cb is not function', function() {
+      var test = function() {
+        roleProvider.allRoles({}, {}, {});
+      };
+
+      expect(test).toThrow('Expected cb to be function');
     });
 
     it("default pass-through", function(done) {
@@ -70,6 +109,28 @@ describe("RoleProvider", function() {
       roleProvider = new RoleProvider('User', 'Event');
       profile = {};
       resource = {};
+    });
+
+   it('returns error if profile is not object', function(done) {
+      roleProvider.bestRole(false, {}, function(err) {
+        expect(err.message).toBe('Expected profile to be object');
+        done();
+      });
+    });
+
+    it('returns error if resource is not object', function(done) {
+      roleProvider.bestRole({}, false, function(err) {
+        expect(err.message).toBe('Expected resource to be object');
+        done();
+      });
+    });
+
+    it('throws exception if cb is not function', function() {
+      var test = function() {
+        roleProvider.bestRole({}, {}, {});
+      };
+
+      expect(test).toThrow('Expected cb to be function');
     });
 
     it("default pass-through", function(done) {

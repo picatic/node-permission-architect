@@ -7,6 +7,14 @@ describe("Resource", function() {
   describe("constructor", function() {
     var resource;
 
+    it('throws exception if name is not string', function() {
+      var test = function() {
+        new Resource(false);
+      };
+
+      expect(test).toThrow('Expected name to be string');
+    });
+
     it("name and identifier set", function() {
       resource = new Resource("Tester", 123);
       expect(resource.name).toBe("Tester");

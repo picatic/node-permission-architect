@@ -27,9 +27,9 @@ describe("SecurityRegistry", function() {
 
   describe('Role fallback', function() {
 
-    it('default fallback is empty Role', function() {
+    it('default fallback is guest Role', function() {
       expect(securityRegistry._fallbackRole instanceof Models.Role).toBe(true);
-      expect(securityRegistry._fallbackRole.name).toBeUndefined();
+      expect(securityRegistry._fallbackRole.name).toBe('guest');
     });
 
     it('setFallback', function() {
