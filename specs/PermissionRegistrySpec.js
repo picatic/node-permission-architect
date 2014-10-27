@@ -112,6 +112,38 @@ describe("PermissionRegistry", function() {
       );
     });
 
+    it('throws exception if permissionName is not string', function() {
+      var test = function() {
+        permissionRegistry.getPermission({}, {}, {}, {});
+      };
+
+      expect(test).toThrow('Expected permissionName to be of type String');
+    });
+
+    it('throws exception if resource is not object', function() {
+      var test = function() {
+        permissionRegistry.getPermission('create', false, {}, {});
+      };
+
+      expect(test).toThrow('Expected resource to be type of Object');
+    });
+
+    it('throws exception if role is not object', function() {
+      var test = function() {
+        permissionRegistry.getPermission('create', {}, false, {});
+      };
+
+      expect(test).toThrow('Expected role to be type of Object');
+    });
+
+    it('throws exception if cb is not function', function() {
+      var test = function() {
+        permissionRegistry.getPermission('create', {}, {}, {});
+      };
+
+      expect(test).toThrow('Expected cb to be type of function');
+    });
+
     it('returns Error if no resource matches', function(done) {
       permissionRegistry.getPermission('update', new Models.Resource('Nope'), role, function(err, permission) {
         expect(err).not.toBe(null);
