@@ -6,6 +6,14 @@ describe("Profile", function() {
   describe("constructor", function() {
     var profile;
 
+    it('throws exception if name is not string', function() {
+      var test = function() {
+        new Profile(false);
+      };
+
+      expect(test).toThrow('Expected name to be string');
+    });
+
     it("name and identifier set", function() {
       profile = new Profile("Tester", 123);
       expect(profile.name).toBe("Tester");
