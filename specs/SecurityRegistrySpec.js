@@ -189,8 +189,12 @@ describe("SecurityRegistry", function() {
       expect(instance.resourceName).toBe("ResourceName");
     });
 
-    it("config is set", function() {
+    it("implementation is set", function() {
       expect(instance.getImplementation()).toEqual(implementation);
+    });
+
+    it('sets securityRegistry', function() {
+      expect(instance.getSecurityRegistry()).toEqual(securityRegistry);
     });
   });
 
@@ -305,30 +309,16 @@ describe("SecurityRegistry", function() {
       });
     });
 
-    it('returns fallback role if RoleProvider returns null', function(done) {
-      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
-        allRoles: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, null);
-        }
-      });
-      securityRegistry.registerRoleProvider(roleProvider);
-      securityRegistry.rolesFor(profile, resource, function(err, role) {
-        expect(err).toBe(null);
-        expect(role).toEqual([securityRegistry.getFallbackRole()]);
-        done();
-      });
-    });
-
     it('returns role provided from RoleProvider', function(done) {
       var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
         allRoles: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, ['admin']);
+          setImmediate(cb, null, [provider.getSecurityRegistry().buildRole('admin')]);
         }
       });
       securityRegistry.registerRoleProvider(roleProvider);
-      securityRegistry.rolesFor(profile, resource, function(err, role) {
+      securityRegistry.rolesFor(profile, resource, function(err, roles) {
         expect(err).toBe(null);
-        expect(role).toEqual(['admin']);
+        expect(roles[0].name).toEqual('admin');
         done();
       });
     });
@@ -350,30 +340,16 @@ describe("SecurityRegistry", function() {
       });
     });
 
-    it('returns fallback role if RoleProvider returns null', function(done) {
-      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
-        allRoles: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, null);
-        }
-      });
-      securityRegistry.registerRoleProvider(roleProvider);
-      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
-        expect(err).toBe(null);
-        expect(role).toEqual(securityRegistry.getFallbackRole());
-        done();
-      });
-    });
-
     it('returns role provided from RoleProvider', function(done) {
       var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
         bestRole: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, 'admin');
+          setImmediate(cb, null, provider.getSecurityRegistry().buildRole('admin'));
         }
       });
       securityRegistry.registerRoleProvider(roleProvider);
       securityRegistry.bestRoleFor(profile, resource, function(err, role) {
         expect(err).toBe(null);
-        expect(role).toEqual('admin');
+        expect(role.name).toEqual('admin');
         done();
       });
     });

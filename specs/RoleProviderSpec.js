@@ -1,8 +1,15 @@
 "use strict";
 
+var SecurityRegisty = require('../lib/SecurityRegistry');
+var RoleProvider = require('../lib/RoleProvider');
+
 describe("RoleProvider", function() {
-  var RoleProvider = require('../lib/RoleProvider');
+  var securityRegistry;
   var roleProvider;
+
+  beforeEach(function() {
+    securityRegistry = SecurityRegisty.get();
+  });
 
   describe("constructor", function() {
 
@@ -12,6 +19,12 @@ describe("RoleProvider", function() {
       expect(roleProvider.profileName).toBe('Profile');
       expect(roleProvider.resourceName).toBe('Resource');
       expect(roleProvider.implementation).toBe(implementation);
+      expect(roleProvider._securityRegistry).toBe(null);
+    });
+
+    it('sets _securityRegistry', function() {
+      roleProvider = new RoleProvider('Profile', 'Resource', null, securityRegistry);
+      expect(roleProvider._securityRegistry).toBe(securityRegistry);
     });
 
     it('throws exception when profileName is not string', function() {
@@ -45,11 +58,24 @@ describe("RoleProvider", function() {
     expect(roleProvider.getImplementation()).toBe(implementation);
   });
 
+  it('setSecurityRegistry', function() {
+    var reg = {my: function() {}};
+    roleProvider = new RoleProvider('User', 'Event', {});
+    roleProvider.setSecurityRegistry(reg);
+    expect(roleProvider.getSecurityRegistry()).toBe(reg);
+  });
+
+  it('getSecurityRegistry', function() {
+    var reg = {my: function() {}};
+    roleProvider = new RoleProvider('User', 'Event', {}, reg);
+    expect(roleProvider.getSecurityRegistry()).toBe(reg);
+  });
+
   describe("allRoles", function() {
     var profile, resource;
 
     beforeEach(function() {
-      roleProvider = new RoleProvider('User', 'Event');
+      roleProvider = new RoleProvider('User', 'Event', {}, securityRegistry);
       profile = {};
       resource = {};
     });
@@ -87,15 +113,45 @@ describe("RoleProvider", function() {
     it("calls implementation.allRoles", function(done) {
       var implementation = {
         allRoles: function(provider, profile, resource, cb) {
-          cb(null, ['Test']);
+          cb(null, [provider.getSecurityRegistry().buildRole('Test')]);
         }
       };
       spyOn(implementation, 'allRoles').andCallThrough();
       roleProvider.setImplementation(implementation);
       roleProvider.allRoles(profile, resource, function(err, roles) {
         expect(err).toBe(null);
-        expect(roles).toEqual(['Test']);
+        expect(roles[0].name).toEqual('Test');
         expect(implementation.allRoles).toHaveBeenCalledWith(roleProvider, profile, resource, jasmine.any(Function));
+        done();
+      });
+    });
+
+    it('returns error if allRoles implementation is not array', function(done) {
+      var implementation = {
+        allRoles: function(provider, profile, resource, cb) {
+          cb(null, 'not an array');
+        }
+      };
+      spyOn(implementation, 'allRoles').andCallThrough();
+      roleProvider.setImplementation(implementation);
+      roleProvider.allRoles(profile, resource, function(err, roles) {
+        expect(err).not.toBe(null);
+        expect(err.message).toBe('Expected roles returned by implementation.allRoles to be Array');
+        done();
+      });
+    });
+
+    it('returns error if implemenation results does not contain instances of Role', function(done) {
+      var implementation = {
+        allRoles: function(provider, profile, resource, cb) {
+          cb(null, ['Test']);
+        }
+      };
+      spyOn(implementation, 'allRoles').andCallThrough();
+      roleProvider.setImplementation(implementation);
+      roleProvider.allRoles(profile, resource, function(err, roles) {
+        expect(err).not.toBe(null);
+        expect(err.message).toBe('Expected roles array to contain Role instances');
         done();
       });
     });
