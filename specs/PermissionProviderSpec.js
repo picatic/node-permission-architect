@@ -1,36 +1,58 @@
 "use strict";
 
+var SecurityRegistry = require('../lib/SecurityRegistry');
 var PermissionProvider = require('../lib/PermissionProvider');
 
 describe("PermissionProvider", function() {
   var permissionProvider;
+  var securityRegistry;
+
+  beforeEach(function() {
+    securityRegistry = SecurityRegistry.get();
+  });
 
   describe("constructor", function() {
 
     beforeEach(function() {
-      permissionProvider = new PermissionProvider('create');
+      permissionProvider = new PermissionProvider('create', {}, {});
     });
 
     it('throws exception when name is not string', function() {
       var test = function() {
-        new PermissionProvider(false, {});
+        new PermissionProvider(false, {}, {});
       };
 
       expect(test).toThrow('Expected name to be string');
+    });
+
+    it('throws exception when securityRegistry is not object', function() {
+      var test = function() {
+        new PermissionProvider('create', {}, false);
+      };
+
+      expect(test).toThrow('Expected securityRegistry to be object');
     });
 
     it("sets name", function() {
       expect(permissionProvider.name).toBe('create');
     });
 
-    it("implementation", function() {
+    it("default implementation", function() {
       expect(permissionProvider.implementation).toEqual({});
     });
+
+    it('sets _securityRegistry', function() {
+      var securityRegistry = {sec: true};
+      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+      expect(permissionProvider._securityRegistry).toBe(securityRegistry);
+    });
+
+
   });
 
   describe("setImplementation", function() {
     beforeEach(function() {
-      permissionProvider = new PermissionProvider('create');
+      permissionProvider = new PermissionProvider('create', {}, {});
     });
 
     it("set implemenation", function() {
@@ -44,7 +66,7 @@ describe("PermissionProvider", function() {
     var implementation;
     beforeEach(function() {
       implementation = {my: 'test'};
-      permissionProvider = new PermissionProvider('create', implementation);
+      permissionProvider = new PermissionProvider('create', implementation, {});
     });
 
     it("get implemenation", function() {
@@ -52,13 +74,37 @@ describe("PermissionProvider", function() {
     });
   });
 
-  describe("getPermission", function() {
+  describe("setSecurityRegistry", function() {
+    beforeEach(function() {
+      permissionProvider = new PermissionProvider('create', {}, {});
+    });
+
+    it("set implemenation", function() {
+      var securityRegistry = {my: 'provider'};
+      permissionProvider.setSecurityRegistry(securityRegistry);
+      expect(permissionProvider._securityRegistry).toBe(securityRegistry);
+    });
+  });
+
+  describe('getSecurityRegistry', function() {
+    var securityRegistry;
+    beforeEach(function() {
+      securityRegistry = {my: 'test'};
+      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+    });
+
+    it("get implemenation", function() {
+      expect(permissionProvider.getSecurityRegistry()).toBe(securityRegistry);
+    });
+  });
+
+  describe('getPermission', function() {
     var role, resource;
 
     beforeEach(function() {
       role = {};
       resource = {};
-      permissionProvider = new PermissionProvider('create');
+      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
     });
 
     it('returns error if role is not object', function(done) {
@@ -83,7 +129,7 @@ describe("PermissionProvider", function() {
       expect(test).toThrow('Expected cb to be function');
     });
 
-    it("defaults to default Permission", function(done) {
+    it('defaults to default Permission', function(done) {
       permissionProvider.getPermission(role, resource, function(err, permission) {
         expect(err).toBe(null);
         expect(permission.granted).toBe(false);
@@ -93,7 +139,7 @@ describe("PermissionProvider", function() {
       });
     });
 
-    it("calls implementation when set", function(done) {
+    it('calls implementation when set', function(done) {
       var implementation = {
         getPermission: function(provider, role, resource, cb) {
           cb(null, null);
