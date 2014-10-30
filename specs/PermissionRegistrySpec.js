@@ -27,7 +27,7 @@ describe("PermissionRegistry", function() {
   describe('register', function() {
 
     it("creates new entry for first new PermissionRegistry", function() {
-      permissionProvider = new PermissionProvider('create');
+      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
       expect(permissionRegistry.providers.Event).toBe(undefined);
       permissionRegistry.register('Event', [permissionProvider]);
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
@@ -35,9 +35,9 @@ describe("PermissionRegistry", function() {
     });
 
     it('adds new items to existing entry', function() {
-      permissionProvider = new PermissionProvider('create');
+      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
       permissionRegistry.register('Event', [permissionProvider]);
-      permissionProvider = new PermissionProvider('read');
+      permissionProvider = new PermissionProvider('read', {}, securityRegistry);
       permissionRegistry.register('Event', [permissionProvider]);
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
       expect(permissionRegistry.providers.Event.read).toBe(permissionProvider);
@@ -62,7 +62,7 @@ describe("PermissionRegistry", function() {
 
     beforeEach(function() {
       permissionRegistry.register('Event', [
-        new PermissionProvider('create'), new PermissionProvider('update')]
+        new PermissionProvider('create', {}, securityRegistry), new PermissionProvider('update', {}, securityRegistry)]
       );
     });
 
@@ -78,8 +78,8 @@ describe("PermissionRegistry", function() {
   describe('providersForResource', function() {
     var create, update;
     beforeEach(function() {
-      create = new PermissionProvider('create');
-      update = new PermissionProvider('update');
+      create = new PermissionProvider('create', {}, securityRegistry);
+      update = new PermissionProvider('update', {}, securityRegistry);
       permissionRegistry.register('Event', [create, update]);
     });
 
@@ -107,7 +107,9 @@ describe("PermissionRegistry", function() {
                 setImmediate(cb, null, new Models.Permission(false));
               }
             }
-          })
+          },
+          securityRegistry
+          )
         ]
       );
     });
