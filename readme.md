@@ -26,20 +26,40 @@ of each part of the system.
 * Supports multiple instances, so you can provide different ACL mappings within the same process.
 * You can pass your own context/state to use within each Provider
 * Easy to migrate too from your existing ACL system (probably, let us know!)
-* Use a Bunyan compatible logger
+* Bunyan compatible logger
 
 
 # Model
+
+## SecurityRegistry
+
+An globally registred instance with an optional name.
+
+```
+var securityRegistry.get();
+
+// Or
+
+var securityRegstry.get('myInstance');
+```
 
 ## Profile
 
 This represents an accessor of resources. In most cases, a User. It could also indicate a
 Group, Organization or any other sort accessor you which to check.
 
+```
+var profile = securityRegistry.buildProfile('User', 1000, userModel);
+```
+
 ## Resource
 
 This represents something to be accessed. Common cases are models: User, Profile, Post, etc.
 But could also reflect actual resources: A queue, ports, etc.
+
+```
+var resource = securityRegistry..buildResource('Post', 2000, postModel);
+```
 
 ## RoleProvider
 
@@ -47,17 +67,91 @@ Every combination of Profile to Resource has to register a RoleProvider. This pr
 is tasks with determining what role best fits the provided profile and resource. You can
 statically code these, or have it look up the roles from your datasource.
 
+```
+var roleProvider = securityRegistry.buildRoleProvider('User', 'Post', {
+  getRoles: function(roleProvider, profile, resource, callback) {
+    var role = this.securityProvider.buildRole('owner');
+    callback(null, [roll]);
+  }
+});
+```
+
+## RoleProviderRegistry
+
+After creating a RoleProvider you need to register it so future lookups can be completed.
+
+```
+securityRegistry.registerRoleProvider(roleProvider);
+```
+
 ## PermissionProvider
 
-Like the RoleProvider, you will need to provide a PermissionProvider for each supported Role and Resource.
-
-This is where you can conditionally provide permissions as defined by your own rules. You could insert
-basic CRUD here: ['read', 'write' ] or something more complicated like:
+PermissionProviders provided for each permission on a named Resource.
 
 ```
-{
-  read: ['id', 'title', 'author'],
-  write: []
+var create = securityRegistry.buildPermissionProvider('create', {
+  getPermission: function(permissionProvider, role, resource, cb) {
+    return permissionProvider.getSecurityRegistry().buildPermission(true, {}, permissionProvider);
+  }
 }
+);
 ```
+
+## PermissionRegistry
+
+A collection of PermissionProviders for a named Resource must be registered for future lookups.
+
+```
+securityRegistry.registerPermissionProvider('Post', [create]);
+```
+
+## Permission
+
+Represents a permission derived from a PermissionProvided with a provided Resource.
+
+```
+securityRegistry.buildPermisison(
+  true, //granted or not
+  {limit: 10}, //additional contextual information you can provided
+  permissionProvider // reference to the permissionProvider that made this Permission
+);
+```
+
+# Usage
+
+## rolesFor
+
+Find all the applicable Roles for the provided Profile and Resource.
+
+```
+securityRegistry.rolesFor(profile, resource, function(err, roles) {
+  // roles is an array of Role
+});
+
+## bestRoleFor
+
+Find a single Role that is the best by weight.
+
+```
+securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+  // role is a single Role
+});
+
+## getPermission
+
+Fetch a Permission for a Resource being accessed with the provided Role.
+
+```
+securityRegistry.getPermission('create', resource, role, function(err, permission) {
+  if (permission.granted === false) {
+    throw new Error('Permission denied');
+  } else {
+    // granted!
+  }
+}
+});
+```
+
+
+
 
