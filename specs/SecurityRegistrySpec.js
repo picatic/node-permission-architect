@@ -293,6 +293,18 @@ describe("SecurityRegistry", function() {
 
   });
 
+  describe('lookupRoleProvider', function() {
+
+    it('calls lookup on RoleProviderRegister', function() {
+      var profile = new Models.Profile('User', 1);
+      var resource = new Models.Resource('Page', 3);
+
+      spyOn(securityRegistry.getRoleProviderRegistry(), 'lookup').andCallThrough();
+      securityRegistry.lookupRoleProvider(profile, resource);
+      expect(securityRegistry.getRoleProviderRegistry().lookup).toHaveBeenCalledWith(profile.name, resource.name);
+    });
+  });
+
   describe('rolesFor', function() {
     var profile, resource;
 
