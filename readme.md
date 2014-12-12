@@ -95,8 +95,8 @@ PermissionProviders provided for each permission on a named Resource.
 
 ```
 var create = securityRegistry.buildPermissionProvider('create', {
-  getPermission: function(permissionProvider, role, resource, cb) {
-    return permissionProvider.getSecurityRegistry().buildPermission(true, {}, permissionProvider);
+  getPermission: function(permissionProvider, resource, role, cb) {
+    return permissionProvider.getSessionRegistry().buildPermission(true, {}, permissionProvider);
   }
 }
 );
