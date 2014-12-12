@@ -26,6 +26,26 @@ describe("Role", function() {
     it("default weight of 0", function() {
       expect(role.weight).toBe(0);
     });
+
+    it("default resource to null", function() {
+      expect(role.resource).toBe(null);
+    });
+
+    it("default profile to null", function() {
+      expect(role.profile).toBe(null);
+    });
+
+    it("constructor includes profile", function() {
+      var profile = {fake: 'profile'};
+      role = new Role("Tester", profile);
+      expect(role.profile).toBe(profile);
+    });
+
+    it("constructor includes resource", function() {
+      var resource = {fake: 'resource'};
+      role = new Role("Tester", null, resource);
+      expect(role.resource).toBe(resource);
+    });
   });
 
 });
