@@ -28,10 +28,15 @@ of each part of the system.
 * Easy to migrate too from your existing ACL system (probably, let us know!)
 * Bunyan compatible logger
 
+# Some implementation details
+
+* If a method takes multiple models, they will always be in this order: Profile, Resource, Role, Permission.
+* `null` is considered intentionally not defined.
+
 
 # Model
 
-## SecurityRegistry
+## SessionRegistry
 
 An globally registred instance with an optional name.
 
@@ -58,7 +63,7 @@ This represents something to be accessed. Common cases are models: User, Profile
 But could also reflect actual resources: A queue, ports, etc.
 
 ```
-var resource = securityRegistry..buildResource('Post', 2000, postModel);
+var resource = securityRegistry.buildResource('Post', 2000, postModel);
 ```
 
 ## RoleProvider
@@ -70,7 +75,7 @@ statically code these, or have it look up the roles from your datasource.
 ```
 var roleProvider = securityRegistry.buildRoleProvider('User', 'Post', {
   getRoles: function(roleProvider, profile, resource, callback) {
-    var role = this.securityProvider.buildRole('owner');
+    var role = this.securityProvider.buildRole('owner', profile, resource);
     callback(null, [roll]);
   }
 });

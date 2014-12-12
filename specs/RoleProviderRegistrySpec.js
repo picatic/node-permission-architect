@@ -4,17 +4,17 @@ var RoleProviderRegistry = require('../lib/RoleProviderRegistry');
 var RoleProvider = require('../lib/RoleProvider');
 
 describe('RoleProviderRegistry', function() {
-  var roleProviderRegistry, securityRegistry, roleProvider;
+  var roleProviderRegistry, sessionRegistry, roleProvider;
 
   beforeEach(function() {
-    securityRegistry = {is: 'securityRegistry', log: function() {}};
-    roleProviderRegistry = new RoleProviderRegistry(securityRegistry);
+    sessionRegistry = {is: 'sessionRegistry', log: function() {}};
+    roleProviderRegistry = new RoleProviderRegistry(sessionRegistry);
   });
 
   describe('constructor', function() {
 
-    it('has instance of securityRegistry', function() {
-      expect(roleProviderRegistry._securityRegistry).toBe(securityRegistry);
+    it('has instance of sessionRegistry', function() {
+      expect(roleProviderRegistry._sessionRegistry).toBe(sessionRegistry);
     });
 
     it('defaults are set', function() {

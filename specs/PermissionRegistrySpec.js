@@ -6,17 +6,17 @@ var Models = require('../lib/models');
 var Errors = require('../lib/Errors');
 
 describe("PermissionRegistry", function() {
-  var permissionRegistry, securityRegistry, permissionProvider;
+  var permissionRegistry, sessionRegistry, permissionProvider;
 
   beforeEach(function() {
-    securityRegistry = {my_registry: 'yes', log: function() {}};
-    permissionRegistry = new PermissionRegistry(securityRegistry);
+    sessionRegistry = {my_registry: 'yes', log: function() {}};
+    permissionRegistry = new PermissionRegistry(sessionRegistry);
   });
 
   describe('constructor' , function() {
 
-    it("sets securityRegistry", function() {
-      expect(permissionRegistry._securityRegistry).toBe(securityRegistry);
+    it("sets sessionRegistry", function() {
+      expect(permissionRegistry._sessionRegistry).toBe(sessionRegistry);
     });
 
     it('providers is empty object', function() {
@@ -27,7 +27,7 @@ describe("PermissionRegistry", function() {
   describe('register', function() {
 
     it("creates new entry for first new PermissionRegistry", function() {
-      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+      permissionProvider = new PermissionProvider('create', {}, sessionRegistry);
       expect(permissionRegistry.providers.Event).toBe(undefined);
       permissionRegistry.register('Event', [permissionProvider]);
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
@@ -35,9 +35,9 @@ describe("PermissionRegistry", function() {
     });
 
     it('adds new items to existing entry', function() {
-      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+      permissionProvider = new PermissionProvider('create', {}, sessionRegistry);
       permissionRegistry.register('Event', [permissionProvider]);
-      permissionProvider = new PermissionProvider('read', {}, securityRegistry);
+      permissionProvider = new PermissionProvider('read', {}, sessionRegistry);
       permissionRegistry.register('Event', [permissionProvider]);
       expect(permissionRegistry.providers.Event).not.toBe(undefined);
       expect(permissionRegistry.providers.Event.read).toBe(permissionProvider);
@@ -62,7 +62,7 @@ describe("PermissionRegistry", function() {
 
     beforeEach(function() {
       permissionRegistry.register('Event', [
-        new PermissionProvider('create', {}, securityRegistry), new PermissionProvider('update', {}, securityRegistry)]
+        new PermissionProvider('create', {}, sessionRegistry), new PermissionProvider('update', {}, sessionRegistry)]
       );
     });
 
@@ -78,8 +78,8 @@ describe("PermissionRegistry", function() {
   describe('providersForResource', function() {
     var create, update;
     beforeEach(function() {
-      create = new PermissionProvider('create', {}, securityRegistry);
-      update = new PermissionProvider('update', {}, securityRegistry);
+      create = new PermissionProvider('create', {}, sessionRegistry);
+      update = new PermissionProvider('update', {}, sessionRegistry);
       permissionRegistry.register('Event', [create, update]);
     });
 
@@ -108,7 +108,7 @@ describe("PermissionRegistry", function() {
               }
             }
           },
-          securityRegistry
+          sessionRegistry
           )
         ]
       );
