@@ -1,14 +1,14 @@
 "use strict";
 
-var SecurityRegisty = require('../lib/SecurityRegistry');
+var SessionRegistry = require('../lib/SessionRegistry');
 var RoleProvider = require('../lib/RoleProvider');
 
 describe("RoleProvider", function() {
-  var securityRegistry;
+  var sessionRegistry;
   var roleProvider;
 
   beforeEach(function() {
-    securityRegistry = SecurityRegisty.get();
+    sessionRegistry = SessionRegistry.get();
   });
 
   describe("constructor", function() {
@@ -19,12 +19,12 @@ describe("RoleProvider", function() {
       expect(roleProvider.profileName).toBe('Profile');
       expect(roleProvider.resourceName).toBe('Resource');
       expect(roleProvider.implementation).toBe(implementation);
-      expect(roleProvider._securityRegistry).toBe(null);
+      expect(roleProvider._sessionRegistry).toBe(null);
     });
 
-    it('sets _securityRegistry', function() {
-      roleProvider = new RoleProvider('Profile', 'Resource', null, securityRegistry);
-      expect(roleProvider._securityRegistry).toBe(securityRegistry);
+    it('sets _sessionRegistry', function() {
+      roleProvider = new RoleProvider('Profile', 'Resource', null, sessionRegistry);
+      expect(roleProvider._sessionRegistry).toBe(sessionRegistry);
     });
 
     it('throws exception when profileName is not string', function() {
@@ -58,24 +58,24 @@ describe("RoleProvider", function() {
     expect(roleProvider.getImplementation()).toBe(implementation);
   });
 
-  it('setSecurityRegistry', function() {
+  it('setSessionRegistry', function() {
     var reg = {my: function() {}};
     roleProvider = new RoleProvider('User', 'Event', {});
-    roleProvider.setSecurityRegistry(reg);
-    expect(roleProvider.getSecurityRegistry()).toBe(reg);
+    roleProvider.setSessionRegistry(reg);
+    expect(roleProvider.getSessionRegistry()).toBe(reg);
   });
 
-  it('getSecurityRegistry', function() {
+  it('getSessionRegistry', function() {
     var reg = {my: function() {}};
     roleProvider = new RoleProvider('User', 'Event', {}, reg);
-    expect(roleProvider.getSecurityRegistry()).toBe(reg);
+    expect(roleProvider.getSessionRegistry()).toBe(reg);
   });
 
   describe("allRoles", function() {
     var profile, resource;
 
     beforeEach(function() {
-      roleProvider = new RoleProvider('User', 'Event', {}, securityRegistry);
+      roleProvider = new RoleProvider('User', 'Event', {}, sessionRegistry);
       profile = {};
       resource = {};
     });
@@ -113,7 +113,7 @@ describe("RoleProvider", function() {
     it("calls implementation.allRoles", function(done) {
       var implementation = {
         allRoles: function(provider, profile, resource, cb) {
-          cb(null, [provider.getSecurityRegistry().buildRole('Test')]);
+          cb(null, [provider.getSessionRegistry().buildRole('Test')]);
         }
       };
       spyOn(implementation, 'allRoles').andCallThrough();

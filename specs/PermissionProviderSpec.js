@@ -1,14 +1,14 @@
 "use strict";
 
-var SecurityRegistry = require('../lib/SecurityRegistry');
+var SessionRegistry = require('../lib/SessionRegistry');
 var PermissionProvider = require('../lib/PermissionProvider');
 
 describe("PermissionProvider", function() {
   var permissionProvider;
-  var securityRegistry;
+  var sessionRegistry;
 
   beforeEach(function() {
-    securityRegistry = SecurityRegistry.get();
+    sessionRegistry = SessionRegistry.get();
   });
 
   describe("constructor", function() {
@@ -25,12 +25,12 @@ describe("PermissionProvider", function() {
       expect(test).toThrow('Expected name to be string');
     });
 
-    it('throws exception when securityRegistry is not object', function() {
+    it('throws exception when sessionRegistry is not object', function() {
       var test = function() {
         new PermissionProvider('create', {}, false);
       };
 
-      expect(test).toThrow('Expected securityRegistry to be object');
+      expect(test).toThrow('Expected sessionRegistry to be object');
     });
 
     it("sets name", function() {
@@ -41,10 +41,10 @@ describe("PermissionProvider", function() {
       expect(permissionProvider.implementation).toEqual({});
     });
 
-    it('sets _securityRegistry', function() {
-      var securityRegistry = {sec: true};
-      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
-      expect(permissionProvider._securityRegistry).toBe(securityRegistry);
+    it('sets _sessionRegistry', function() {
+      var sessionRegistry = {sec: true};
+      permissionProvider = new PermissionProvider('create', {}, sessionRegistry);
+      expect(permissionProvider._sessionRegistry).toBe(sessionRegistry);
     });
 
 
@@ -74,49 +74,49 @@ describe("PermissionProvider", function() {
     });
   });
 
-  describe("setSecurityRegistry", function() {
+  describe("setSessionRegistry", function() {
     beforeEach(function() {
       permissionProvider = new PermissionProvider('create', {}, {});
     });
 
     it("set implemenation", function() {
-      var securityRegistry = {my: 'provider'};
-      permissionProvider.setSecurityRegistry(securityRegistry);
-      expect(permissionProvider._securityRegistry).toBe(securityRegistry);
+      var sessionRegistry = {my: 'provider'};
+      permissionProvider.setSessionRegistry(sessionRegistry);
+      expect(permissionProvider._sessionRegistry).toBe(sessionRegistry);
     });
   });
 
-  describe('getSecurityRegistry', function() {
-    var securityRegistry;
+  describe('getSessionRegistry', function() {
+    var sessionRegistry;
     beforeEach(function() {
-      securityRegistry = {my: 'test'};
-      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+      sessionRegistry = {my: 'test'};
+      permissionProvider = new PermissionProvider('create', {}, sessionRegistry);
     });
 
     it("get implemenation", function() {
-      expect(permissionProvider.getSecurityRegistry()).toBe(securityRegistry);
+      expect(permissionProvider.getSessionRegistry()).toBe(sessionRegistry);
     });
   });
 
   describe('getPermission', function() {
-    var role, resource;
+    var resource, role;
 
     beforeEach(function() {
       role = {};
       resource = {};
-      permissionProvider = new PermissionProvider('create', {}, securityRegistry);
+      permissionProvider = new PermissionProvider('create', {}, sessionRegistry);
     });
 
-    it('returns error if role is not object', function(done) {
+    it('returns error if resource is not object', function(done) {
       permissionProvider.getPermission(false, {}, function(err) {
-        expect(err.message).toBe('Expected role to be object');
+        expect(err.message).toBe('Expected resource to be object');
         done();
       });
     });
 
-    it('returns error if resource is not object', function(done) {
+    it('returns error if role is not object', function(done) {
       permissionProvider.getPermission({}, false, function(err) {
-        expect(err.message).toBe('Expected resource to be object');
+        expect(err.message).toBe('Expected role to be object');
         done();
       });
     });

@@ -1,66 +1,66 @@
 "use strict";
 
-var SecurityRegistry = require('../lib/SecurityRegistry');
+var SessionRegistry = require('../lib/SessionRegistry');
 var Models = require('../lib/models');
 var PermissionProvider = require('../lib/PermissionProvider');
 var PermissionRegistry = require('../lib/PermissionRegistry');
 var Errors = require('../lib/Errors');
 
-describe("SecurityRegistry", function() {
-  var securityRegistry;
+describe("SessionRegistry", function() {
+  var sessionRegistry;
 
   beforeEach(function() {
-    securityRegistry = SecurityRegistry.get();
+    sessionRegistry = SessionRegistry.get();
   });
 
   afterEach(function() {
-    SecurityRegistry.remove('__default__');
+    SessionRegistry.remove('__default__');
   });
 
   it("Provides default instance", function() {
-    expect(securityRegistry.name).toBe('__default__');
+    expect(sessionRegistry.name).toBe('__default__');
   });
 
   it('instance has Models', function() {
-    expect(securityRegistry.Models).not.toBeUndefined();
+    expect(sessionRegistry.Models).not.toBeUndefined();
   });
 
   describe('Role fallback', function() {
 
     it('default fallback is guest Role', function() {
-      expect(securityRegistry._fallbackRole instanceof Models.Role).toBe(true);
-      expect(securityRegistry._fallbackRole.name).toBe('guest');
+      expect(sessionRegistry._fallbackRole instanceof Models.Role).toBe(true);
+      expect(sessionRegistry._fallbackRole.name).toBe('guest');
     });
 
     it('setFallback', function() {
       var role = new Models.Role('test');
-      securityRegistry.setFallbackRole(role);
-      expect(securityRegistry._fallbackRole).toBe(role);
+      sessionRegistry.setFallbackRole(role);
+      expect(sessionRegistry._fallbackRole).toBe(role);
     });
 
     it('getFallback', function() {
       var role = new Models.Role('test');
-      securityRegistry.setFallbackRole(role);
-      expect(securityRegistry.getFallbackRole()).toBe(role);
+      sessionRegistry.setFallbackRole(role);
+      expect(sessionRegistry.getFallbackRole()).toBe(role);
     });
   });
 
   describe('Permission fallback', function() {
     it('default fallback is empty Permission', function() {
-      expect(securityRegistry._fallbackPermission instanceof Models.Permission).toBe(true);
-      expect(securityRegistry._fallbackPermission).toEqual(new Models.Permission());
+      expect(sessionRegistry._fallbackPermission instanceof Models.Permission).toBe(true);
+      expect(sessionRegistry._fallbackPermission).toEqual(new Models.Permission());
     });
 
     it('setFallback', function() {
       var permission = new Models.Permission(true, {});
-      securityRegistry.setFallbackPermission(permission);
-      expect(securityRegistry._fallbackPermission).toBe(permission);
+      sessionRegistry.setFallbackPermission(permission);
+      expect(sessionRegistry._fallbackPermission).toBe(permission);
     });
 
     it('getFallback', function() {
       var permission = new Models.Permission(true, {});
-      securityRegistry.setFallbackPermission(permission);
-      expect(securityRegistry.getFallbackPermission()).toBe(permission);
+      sessionRegistry.setFallbackPermission(permission);
+      expect(sessionRegistry.getFallbackPermission()).toBe(permission);
     });
   });
 
@@ -74,17 +74,17 @@ describe("SecurityRegistry", function() {
     });
 
     it('default to null', function() {
-      expect(securityRegistry._logger).toBe(null);
+      expect(sessionRegistry._logger).toBe(null);
     });
 
     it('setLogger', function() {
-      securityRegistry.setLogger(logger);
-      expect(securityRegistry._logger).toBe(logger);
+      sessionRegistry.setLogger(logger);
+      expect(sessionRegistry._logger).toBe(logger);
     });
 
     it('getLogger', function() {
-      securityRegistry.setLogger(logger);
-      expect(securityRegistry.getLogger()).toBe(logger);
+      sessionRegistry.setLogger(logger);
+      expect(sessionRegistry.getLogger()).toBe(logger);
     });
   });
 
@@ -98,16 +98,16 @@ describe("SecurityRegistry", function() {
     });
 
     it('calls _logger with first param as method and additional params passed along', function() {
-      securityRegistry.setLogger(logger);
+      sessionRegistry.setLogger(logger);
       spyOn(logger, 'info').andCallThrough();
-      securityRegistry.log('info', 'My string %s', 'a');
+      sessionRegistry.log('info', 'My string %s', 'a');
       expect(logger.info).toHaveBeenCalledWith('My string %s', 'a');
     });
 
     it('does not call non-existant levels', function() {
-      securityRegistry.setLogger(logger);
+      sessionRegistry.setLogger(logger);
       var test = function() {
-        securityRegistry.log('madeup', 'My string %s', 'a');
+        sessionRegistry.log('madeup', 'My string %s', 'a');
       };
       expect(test).not.toThrow();
     });
@@ -116,7 +116,7 @@ describe("SecurityRegistry", function() {
   describe("getRoleProviderRegistry", function() {
     var instance;
     beforeEach(function() {
-      instance = securityRegistry.getRoleProviderRegistry();
+      instance = sessionRegistry.getRoleProviderRegistry();
     });
 
     it("returns instance of getRoleProviderRegistry", function() {
@@ -125,7 +125,7 @@ describe("SecurityRegistry", function() {
     });
 
     it("is same instance each time", function() {
-      var secondInstance = securityRegistry.getRoleProviderRegistry();
+      var secondInstance = sessionRegistry.getRoleProviderRegistry();
       expect(secondInstance).toEqual(instance);
     });
   });
@@ -134,7 +134,7 @@ describe("SecurityRegistry", function() {
     var instance;
 
     beforeEach(function() {
-      instance = securityRegistry.buildResource("Name", "id", {my: "config"});
+      instance = sessionRegistry.buildResource("Name", "id", {my: "config"});
     });
 
     it("returns instance of Resource", function() {
@@ -155,7 +155,7 @@ describe("SecurityRegistry", function() {
     var instance;
 
     beforeEach(function() {
-      instance = securityRegistry.buildProfile("Name", "id", {my: "config"});
+      instance = sessionRegistry.buildProfile("Name", "id", {my: "config"});
     });
 
     it("returns instance of Profile", function() {
@@ -177,7 +177,7 @@ describe("SecurityRegistry", function() {
 
     beforeEach(function() {
       implementation = {my: 'implementation'};
-      instance = securityRegistry.buildRoleProvider("ProfileName", "ResourceName", implementation);
+      instance = sessionRegistry.buildRoleProvider("ProfileName", "ResourceName", implementation);
     });
 
     it("returns instance of RoleProvider", function() {
@@ -193,8 +193,8 @@ describe("SecurityRegistry", function() {
       expect(instance.getImplementation()).toEqual(implementation);
     });
 
-    it('sets securityRegistry', function() {
-      expect(instance.getSecurityRegistry()).toEqual(securityRegistry);
+    it('sets sessionRegistry', function() {
+      expect(instance.getSessionRegistry()).toEqual(sessionRegistry);
     });
   });
 
@@ -202,13 +202,13 @@ describe("SecurityRegistry", function() {
     var roleProvider, roleProviderRegistry;
 
     beforeEach(function() {
-      roleProvider = securityRegistry.buildRoleProvider("ProfileName", "ResourceName", {my: "config"});
-      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
+      roleProvider = sessionRegistry.buildRoleProvider("ProfileName", "ResourceName", {my: "config"});
+      roleProviderRegistry = sessionRegistry.getRoleProviderRegistry();
     });
 
     it("registers roleProvider", function() {
       spyOn(roleProviderRegistry,'register').andCallFake(function() {});
-      securityRegistry.registerRoleProvider(roleProvider);
+      sessionRegistry.registerRoleProvider(roleProvider);
       expect(roleProviderRegistry.register).toHaveBeenCalledWith(roleProvider);
     });
   });
@@ -216,9 +216,9 @@ describe("SecurityRegistry", function() {
   describe('resourcesForProfile', function() {
     var roleProviderRegistry;
     it('calls forProfile on RoleProviderRegistry', function() {
-      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
+      roleProviderRegistry = sessionRegistry.getRoleProviderRegistry();
       spyOn(roleProviderRegistry, 'forProfile').andCallThrough();
-      securityRegistry.resourcesForProfile('User');
+      sessionRegistry.resourcesForProfile('User');
       expect(roleProviderRegistry.forProfile).toHaveBeenCalled();
     });
   });
@@ -226,9 +226,9 @@ describe("SecurityRegistry", function() {
   describe('profilesForResource', function() {
     var roleProviderRegistry;
     it('calls forResource on RoleProviderRegistry', function() {
-      roleProviderRegistry = securityRegistry.getRoleProviderRegistry();
+      roleProviderRegistry = sessionRegistry.getRoleProviderRegistry();
       spyOn(roleProviderRegistry, 'forResource').andCallThrough();
-      securityRegistry.profilesForResource('Event');
+      sessionRegistry.profilesForResource('Event');
       expect(roleProviderRegistry.forResource).toHaveBeenCalled();
     });
   });
@@ -239,7 +239,7 @@ describe("SecurityRegistry", function() {
 
     beforeEach(function() {
       implementation = {my: 'implementation'};
-      instance = securityRegistry.buildPermissionProvider("create", implementation);
+      instance = sessionRegistry.buildPermissionProvider("create", implementation);
     });
 
     it("returns instance of PermissionProvider", function() {
@@ -259,19 +259,19 @@ describe("SecurityRegistry", function() {
   describe('getPermissionRegistry', function() {
     var instance;
     beforeEach(function() {
-      instance = securityRegistry.getPermissionRegistry();
+      instance = sessionRegistry.getPermissionRegistry();
     });
 
     it("returns instance of PermissionRegistry", function() {
       expect(instance instanceof PermissionRegistry).toBe(true);
     });
 
-    it('sets securityRegistry from constructor', function() {
-      expect(instance._securityRegistry).toBe(securityRegistry);
+    it('sets sessionRegistry from constructor', function() {
+      expect(instance._sessionRegistry).toBe(sessionRegistry);
     });
 
     it("is same instance each time", function() {
-      var secondInstance = securityRegistry.getPermissionRegistry();
+      var secondInstance = sessionRegistry.getPermissionRegistry();
       expect(secondInstance).toEqual(instance);
     });
 
@@ -282,13 +282,13 @@ describe("SecurityRegistry", function() {
 
     beforeEach(function() {
       implementation = {my: 'implementation'};
-      instance = securityRegistry.buildPermissionProvider("create", implementation);
+      instance = sessionRegistry.buildPermissionProvider("create", implementation);
     });
 
     it('calls register on PermissionProvider', function() {
-      spyOn(securityRegistry.getPermissionRegistry(), 'register').andCallThrough();
-      securityRegistry.registerPermissionProviders('Event', [instance]);
-      expect(securityRegistry.getPermissionRegistry().register).toHaveBeenCalledWith('Event', [instance]);
+      spyOn(sessionRegistry.getPermissionRegistry(), 'register').andCallThrough();
+      sessionRegistry.registerPermissionProviders('Event', [instance]);
+      expect(sessionRegistry.getPermissionRegistry().register).toHaveBeenCalledWith('Event', [instance]);
     });
 
   });
@@ -299,9 +299,9 @@ describe("SecurityRegistry", function() {
       var profile = new Models.Profile('User', 1);
       var resource = new Models.Resource('Page', 3);
 
-      spyOn(securityRegistry.getRoleProviderRegistry(), 'lookup').andCallThrough();
-      securityRegistry.lookupRoleProvider(profile, resource);
-      expect(securityRegistry.getRoleProviderRegistry().lookup).toHaveBeenCalledWith(profile.name, resource.name);
+      spyOn(sessionRegistry.getRoleProviderRegistry(), 'lookup').andCallThrough();
+      sessionRegistry.lookupRoleProvider(profile, resource);
+      expect(sessionRegistry.getRoleProviderRegistry().lookup).toHaveBeenCalledWith(profile.name, resource.name);
     });
   });
 
@@ -314,21 +314,21 @@ describe("SecurityRegistry", function() {
     });
 
     it('returns fallback role if no RoleProvider found', function(done) {
-      securityRegistry.rolesFor(profile, resource, function(err, role) {
+      sessionRegistry.rolesFor(profile, resource, function(err, role) {
         expect(err).toBe(null);
-        expect(role).toEqual([securityRegistry.getFallbackRole()]);
+        expect(role).toEqual([sessionRegistry.getFallbackRole()]);
         done();
       });
     });
 
     it('returns role provided from RoleProvider', function(done) {
-      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+      var roleProvider = sessionRegistry.buildRoleProvider('User', 'Page', {
         allRoles: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, [provider.getSecurityRegistry().buildRole('admin')]);
+          setImmediate(cb, null, [provider.getSessionRegistry().buildRole('admin')]);
         }
       });
-      securityRegistry.registerRoleProvider(roleProvider);
-      securityRegistry.rolesFor(profile, resource, function(err, roles) {
+      sessionRegistry.registerRoleProvider(roleProvider);
+      sessionRegistry.rolesFor(profile, resource, function(err, roles) {
         expect(err).toBe(null);
         expect(roles[0].name).toEqual('admin');
         done();
@@ -345,21 +345,21 @@ describe("SecurityRegistry", function() {
     });
 
     it('returns fallback role if no RoleProvider found', function(done) {
-      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+      sessionRegistry.bestRoleFor(profile, resource, function(err, role) {
         expect(err).toBe(null);
-        expect(role).toEqual(securityRegistry.getFallbackRole());
+        expect(role).toEqual(sessionRegistry.getFallbackRole());
         done();
       });
     });
 
     it('returns role provided from RoleProvider', function(done) {
-      var roleProvider = securityRegistry.buildRoleProvider('User', 'Page', {
+      var roleProvider = sessionRegistry.buildRoleProvider('User', 'Page', {
         bestRole: function(provider, profile, resource, cb) {
-          setImmediate(cb, null, provider.getSecurityRegistry().buildRole('admin'));
+          setImmediate(cb, null, provider.getSessionRegistry().buildRole('admin'));
         }
       });
-      securityRegistry.registerRoleProvider(roleProvider);
-      securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+      sessionRegistry.registerRoleProvider(roleProvider);
+      sessionRegistry.bestRoleFor(profile, resource, function(err, role) {
         expect(err).toBe(null);
         expect(role.name).toEqual('admin');
         done();
@@ -372,15 +372,15 @@ describe("SecurityRegistry", function() {
 
     beforeEach(function() {
       role = new Models.Role('admin');
-      resource = securityRegistry.buildResource('Event', 1, {});
-      permissionProvider = securityRegistry.buildPermissionProvider('create');
-      securityRegistry.registerPermissionProviders('Event', [permissionProvider]);
+      resource = sessionRegistry.buildResource('Event', 1, {});
+      permissionProvider = sessionRegistry.buildPermissionProvider('create');
+      sessionRegistry.registerPermissionProviders('Event', [permissionProvider]);
     });
 
     it('calls getPermission on PermissionResgitry', function(done) {
-      spyOn(securityRegistry.getPermissionRegistry(), 'getPermission').andCallThrough();
-      securityRegistry.getPermission('create', role, resource, function(err, permission) {
-        expect(securityRegistry.getPermissionRegistry().getPermission).toHaveBeenCalledWith('create', role, resource, jasmine.any(Function));
+      spyOn(sessionRegistry.getPermissionRegistry(), 'getPermission').andCallThrough();
+      sessionRegistry.getPermission('create', resource, role, function(err, permission) {
+        expect(sessionRegistry.getPermissionRegistry().getPermission).toHaveBeenCalledWith('create', resource, role, jasmine.any(Function));
         done();
       });
     });
@@ -390,7 +390,7 @@ describe("SecurityRegistry", function() {
   describe('buildRole', function() {
 
     it('creates instance of Role', function() {
-      var role = securityRegistry.buildRole('admin');
+      var role = sessionRegistry.buildRole('admin');
       expect(role instanceof Models.Role).toBe(true);
     });
   });
@@ -398,7 +398,7 @@ describe("SecurityRegistry", function() {
   describe('buildPermission', function() {
 
     it('creates instance of Permission', function() {
-      var permission = securityRegistry.buildPermission(true, {my:'context'}, {provider:'magic'});
+      var permission = sessionRegistry.buildPermission(true, {my:'context'}, {provider:'magic'});
       expect(permission instanceof Models.Permission).toBe(true);
     });
   });
