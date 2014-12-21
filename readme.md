@@ -1,7 +1,3 @@
-# WIP
-
-This is a WIP right now and not fully functional. We are quickly moving towards integrating this into our production pipeline and will remove the WIP status and bump to version 1.0.0 once we have.
-
 [![Build Status](https://travis-ci.org/picatic/node-permission-architect.png?branch=master)](https://travis-ci.org/picatic/node-permission-architect)
 [![NPM version](https://badge.fury.io/js/permission-architect.png)](http://badge.fury.io/js/permission-architect)
 [![Code Climate](https://codeclimate.com/github/picatic/node-permission-architect.png)](https://codeclimate.com/github/picatic/node-permission-architect)
@@ -41,11 +37,11 @@ of each part of the system.
 An globally registred instance with an optional name.
 
 ```
-var securityRegistry.get();
+var sessionRegistry.get();
 
 // Or
 
-var securityRegstry.get('myInstance');
+var sessionRegstry.get('myInstance');
 ```
 
 ## Profile
@@ -54,7 +50,7 @@ This represents an accessor of resources. In most cases, a User. It could also i
 Group, Organization or any other sort accessor you which to check.
 
 ```
-var profile = securityRegistry.buildProfile('User', 1000, userModel);
+var profile = sessionRegistry.buildProfile('User', 1000, userModel);
 ```
 
 ## Resource
@@ -63,7 +59,7 @@ This represents something to be accessed. Common cases are models: User, Profile
 But could also reflect actual resources: A queue, ports, etc.
 
 ```
-var resource = securityRegistry.buildResource('Post', 2000, postModel);
+var resource = sessionRegistry.buildResource('Post', 2000, postModel);
 ```
 
 ## RoleProvider
@@ -73,9 +69,9 @@ is tasks with determining what role best fits the provided profile and resource.
 statically code these, or have it look up the roles from your datasource.
 
 ```
-var roleProvider = securityRegistry.buildRoleProvider('User', 'Post', {
+var roleProvider = sessionRegistry.buildRoleProvider('User', 'Post', {
   getRoles: function(roleProvider, profile, resource, callback) {
-    var role = this.securityProvider.buildRole('owner', profile, resource);
+    var role = this.sessionProvider.buildRole('owner', profile, resource);
     callback(null, [roll]);
   }
 });
@@ -86,7 +82,7 @@ var roleProvider = securityRegistry.buildRoleProvider('User', 'Post', {
 After creating a RoleProvider you need to register it so future lookups can be completed.
 
 ```
-securityRegistry.registerRoleProvider(roleProvider);
+sessionRegistry.registerRoleProvider(roleProvider);
 ```
 
 ## PermissionProvider
@@ -94,7 +90,7 @@ securityRegistry.registerRoleProvider(roleProvider);
 PermissionProviders provided for each permission on a named Resource.
 
 ```
-var create = securityRegistry.buildPermissionProvider('create', {
+var create = sessionRegistry.buildPermissionProvider('create', {
   getPermission: function(permissionProvider, resource, role, cb) {
     return permissionProvider.getSessionRegistry().buildPermission(true, {}, permissionProvider);
   }
@@ -107,7 +103,7 @@ var create = securityRegistry.buildPermissionProvider('create', {
 A collection of PermissionProviders for a named Resource must be registered for future lookups.
 
 ```
-securityRegistry.registerPermissionProvider('Post', [create]);
+sessionRegistry.registerPermissionProvider('Post', [create]);
 ```
 
 ## Permission
@@ -115,7 +111,7 @@ securityRegistry.registerPermissionProvider('Post', [create]);
 Represents a permission derived from a PermissionProvided with a provided Resource.
 
 ```
-securityRegistry.buildPermisison(
+sessionRegistry.buildPermisison(
   true, //granted or not
   {limit: 10}, //additional contextual information you can provided
   permissionProvider // reference to the permissionProvider that made this Permission
@@ -129,7 +125,7 @@ securityRegistry.buildPermisison(
 Find all the applicable Roles for the provided Profile and Resource.
 
 ```
-securityRegistry.rolesFor(profile, resource, function(err, roles) {
+sessionRegistry.rolesFor(profile, resource, function(err, roles) {
   // roles is an array of Role
 });
 
@@ -138,7 +134,7 @@ securityRegistry.rolesFor(profile, resource, function(err, roles) {
 Find a single Role that is the best by weight.
 
 ```
-securityRegistry.bestRoleFor(profile, resource, function(err, role) {
+sessionRegistry.bestRoleFor(profile, resource, function(err, role) {
   // role is a single Role
 });
 
@@ -147,7 +143,7 @@ securityRegistry.bestRoleFor(profile, resource, function(err, role) {
 Fetch a Permission for a Resource being accessed with the provided Role.
 
 ```
-securityRegistry.getPermission('create', resource, role, function(err, permission) {
+sessionRegistry.getPermission('create', resource, role, function(err, permission) {
   if (permission.granted === false) {
     throw new Error('Permission denied');
   } else {
