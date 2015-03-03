@@ -1,6 +1,6 @@
 {
   "name": "permission-architect",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A framework to build highly customizable ACL like permissions with.",
   "homepage": "https://github.com/picatic/node-permission-architect",
   "bugs": "https://github.com/picatic/node-permission-architect/issues",
