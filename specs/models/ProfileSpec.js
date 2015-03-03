@@ -44,4 +44,17 @@ describe("Profile", function() {
 
   });
 
+  describe("cacheName", function() {
+    var profile;
+
+    beforeEach(function() {
+      profile = new Profile('User', 1);
+    });
+
+    it("has cacheName", function() {
+      expect(profile.cacheName()).toBe("Profile[User][1]");
+    });
+
+  });
+
 });
