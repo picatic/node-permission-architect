@@ -113,6 +113,18 @@ describe("SessionRegistry", function() {
     });
   });
 
+  describe('cache', function() {
+
+    it('has not cache by default', function() {
+      expect(sessionRegistry._cache).toBe(null);
+    });
+
+    it('enableCache sets _cache', function() {
+      sessionRegistry.enableCache();
+      expect(sessionRegistry._cache).not.toBe(null);
+    });
+  });
+
   describe("getRoleProviderRegistry", function() {
     var instance;
     beforeEach(function() {
@@ -363,6 +375,28 @@ describe("SessionRegistry", function() {
         expect(err).toBe(null);
         expect(role.name).toEqual('admin');
         done();
+      });
+    });
+
+    describe("with cache", function() {
+      
+      beforeEach(function() {
+        sessionRegistry.enableCache();
+        var roleProvider = sessionRegistry.buildRoleProvider('User', 'Page', {
+          bestRole: function(provider, profile, resource, cb) {
+            setImmediate(cb, null, provider.getSessionRegistry().buildRole('admin'));
+          }
+        });
+        sessionRegistry.registerRoleProvider(roleProvider);
+      });
+
+      it('sets cache key', function(done) {
+        sessionRegistry.bestRoleFor(profile, resource, function(err, role) {
+          sessionRegistry._cache.get("bestRoleFor[Profile[User][1]Resource[Page][2]]", function(err, val) {
+            expect(val['bestRoleFor[Profile[User][1]Resource[Page][2]]']).toBe(role);
+            done();
+          });
+        });
       });
     });
   });

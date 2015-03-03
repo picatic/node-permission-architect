@@ -45,4 +45,17 @@ describe("Resource", function() {
 
   });
 
+
+  describe("cacheName", function() {
+    var resource;
+
+    beforeEach(function() {
+      resource = new Resource('Post', 1);
+    });
+
+    it("has cacheName", function() {
+      expect(resource.cacheName()).toBe("Resource[Post][1]");
+    });
+
+  });
 });
